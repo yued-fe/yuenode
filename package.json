@@ -1,0 +1,52 @@
+{
+  "name": "QidianDynamicNodeServer",
+  "version": "2.0.1",
+  "author": "luolei",
+  "description": "QidianDynamicNodeServer",
+  "private": true,
+  "dependencies": {
+    "@tencent/cl5": "^1.0.10",
+    "@tencent/taf-monitor": "^1.0.5",
+    "chalk": "^1.1.1",
+    "chinese-s2t": "0.0.6",
+    "chokidar": "^1.4.3",
+    "co": "^4.6.0",
+    "co-body": "^4.0.0",
+    "co-fs": "^1.2.0",
+    "co-request": "^1.0.0",
+    "co-views": "^2.1.0",
+    "cookie": "^0.3.1",
+    "copy-to": "^2.0.1",
+    "dateformat": "^1.0.12",
+    "ejs": "^2.4.1",
+    "html-minifier": "^3.1.1",
+    "koa": "^1.2.0",
+    "koa-bodyparser": "^2.0.1",
+    "koa-ejs": "^3.0.0",
+    "koa-logger": "^1.2.2",
+    "koa-request": "^1.0.0",
+    "koa-router": "^5.1.2",
+    "koa-static": "^2.0.0",
+    "lodash": "^4.5.1",
+    "path": "^0.12.7",
+    "taf-logs": "latest",
+    "taf-rpc": "latest",
+    "taf-stream": "latest",
+    "thunkify": "^2.1.2"
+  },
+  "taf": {
+    "platform": "147.taf.wsd.com",
+    "exclude": [
+      "node_modules"
+    ],
+    "node": 0,
+    "set": "",
+    "app": "QD",
+    "service": "QidianDynamicNodeServer"
+  },
+  "devDependencies": {
+    "chalk": "^1.1.1",
+    "gulp": "^3.9.0",
+    "gulp-nodemon": "^2.0.6"
+  }
+}
