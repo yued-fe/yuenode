@@ -22,17 +22,17 @@ const SITE_CONF = serverDetective.getSiteConf();
 const serverConf = serverDetective.getServerConf();
 const routerMap = serverDetective.getRouterMapConf();
 const domainMap = serverDetective.getDomainMap(); //获得域名映射表
-const templatePathPrefix = serverConf['views']['path_prefix'] || "local";
+const templatePathPrefix = serverConf['views']['path_prefix'] || 'local';
 const staticConf = serverConf['static'];
-const Monitor = require("../lib/monitor");
+
+const Monitor = require('../lib/monitor');
 
 
 /**
  * 由于L5需要服务器环境支持(依赖底层库),本地调试不载入L5模块防止出错。
  */
-
 var L5;
-if (NODE_ENV !== 'local') {
+if (process.env.l5_on == true) {
     L5 = require('../lib/co-l5');
 }
 
@@ -99,7 +99,7 @@ var configRouter = function(val) {
          * @type {[type]}
          */
 
-        //过滤掉端口port
+        //过滤掉端口port:主要供本地调试用
         originHost = originHost.replace(/\:\d.*/g, '')
 
         //如果配了前缀域名，例如local.或者dev等，域名需要去除这个
@@ -109,12 +109,14 @@ var configRouter = function(val) {
                 originHost = originHost.substr(templatePathPrefix.length);
             }
         }
+
         //获得路由信息
         var routerDomain = requestHandler.getRouterDomain(originHost, this.request.path, val);
         var templateFileName = routerDomain['views'];
         var cgi = routerDomain['cgi'];
         var _pageRequestUrl;
         let body;
+
 
         try {
             body = {};
@@ -148,15 +150,13 @@ var configRouter = function(val) {
                     _cgiToAppendQuery = '?' + _cgiToAppendQuery;
                 }
 
-
                 //由于是内网通讯,默认走http协议头
-                //如果Cgi中有配置query值,默认都append到client端query值后面
+                //如果 cgi 中有配置 query 值,默认都append到client端query值后面
                 _pageRequestUrl = 'http://' + addr + _cgiRaw + searchQuery + _cgiToAppendQuery;
                 console.log('[Qidian]当前请求后台接口:' + _pageRequestUrl);
                 if (serverConf['cgi']['domain']) {
                     rawHeaders.host = serverConf['cgi']['domain']; //指定Host到后端
                 }
-
                 //上报跟后端服务的数据
                 var begin = Date.now();
                 var response = yield cgiRequest(_pageRequestUrl, rawHeaders);
@@ -199,6 +199,7 @@ var configRouter = function(val) {
                 }
                 m_options['returnValue'] = _statusCode;
                 monitor.report(m_options, succ, timeout);
+
                 if (_statusCode === 0) {
                     console.log('对应模板是' + serverConf['views']['path'] + templateFileName);
                     yield that.render(templateFileName, body);
@@ -229,21 +230,18 @@ var configRouter = function(val) {
     };
 }
 
-
 /**
  * 路由兼容加载
  * 对配置的路由做兼容处理,统一转成带host路由 和 完整路径views模式
  */
-console.log('处理路由');
-console.log(routerMap);
+console.log(chalk.blue('处理路由:'));
 var routes = routersHandler.parseRouterMap(routerMap);
+console.log(JSON.stringify(routes,null,4));
 
 /**
  * 遍历routermap.js 文件,所有的路由均有指定cgi接口匹配
  */
-
 for (var routerVal in routes) {
-    // console.log('加载koa路由 ' + routerVal + ' : ' +  JSON.stringify(routes[routerVal]) );
     router.get(routerVal, configRouter(routes[routerVal]));
 }
 

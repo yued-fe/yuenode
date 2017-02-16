@@ -1,10 +1,11 @@
 'use strict';
 
 /**
- * 项目入口
+ * Yuenode
  * Author:luolei,yanxiang
- * url:http://code.oa.com/v2/svn/fe/qidian_node_server_proj
+ * url:http://git.code.oa.com/yuewen/yuenode
  */
+
 
 
 const koa = require('koa');
@@ -16,22 +17,24 @@ const serve = require('koa-static');
 const chalk = require('chalk');
 const bodyParser = require('koa-bodyparser');
 const app = koa();
+const dateformat = require('dateformat');
 const _ = require('lodash');
+
+
 
 /**
  * 框架机业务自定义中间件
  * @type {[type]}
  */
-
 const error = require('./lib/errorHandler');
 const serverDetective = require('./lib/serverDetective');
 const SITE_CONF = serverDetective.getSiteConf();
 const DEBUG = serverDetective.isDebug();
 const serverConf = serverDetective.getServerConf();
 const templatePath = serverConf['views']['path'];
-const templatePathPrefix = serverConf['views']['path_prefix'] || "";
 
-const reqInfo = require("./middleware/reqInfo");
+
+const reqInfo = require('./middleware/reqInfo');
 const render = require('./middleware/koa-qidian-ejs');
 const favicon = require('./middleware/favicon');
 const qidianExtens = require('./middleware/extends');
@@ -42,12 +45,7 @@ const ChineseChecker = require('./middleware/chinese');
 //静态化所需要的其他模块
 const fs = require('co-fs');
 const filesDetective = require('./lib/filesDetective.js');
-const checkStaticPath = require('./lib/checkStaticPath.js');
-/**
- * 文件检查机制
- */
 
-checkStaticPath.init()
 
 
 //在nginx无设置的情况下,配置默认的favicon规则路由,防止大量favicon的404请求被catch error
@@ -94,9 +92,9 @@ if (DEBUG) {
  * 默认开启调试日志
  */
 app.use(function*(next) {
-    console.log(chalk.blue("----"));
+    console.log(chalk.blue('----'));
     console.log(this.request.headers);
-    console.log(chalk.blue("----"));
+    console.log(chalk.blue('----'));
     yield next;
 });
 
@@ -107,8 +105,6 @@ app.use(function*(next) {
  */
 
 let commonRouter = require('./router/common.js'); //通配路由
-let staticRouter = require('./router/static.js');
-
 
 /**
  * 模板文件统一使用.html结尾
@@ -127,11 +123,23 @@ render(app, {
 
 /**
  * '/' 通用业务路由
- * '/api/v2/setData' 静态化路由
  */
-router.use('', commonRouter.routes())
-      .use('/api/v2/setData', staticRouter.routes());
+router.use('', commonRouter.routes());
 
+
+/**
+ * 静态化服务
+ * 静态化路由约束为 /api/v2/setData 开头
+ * @param  {[type]} process.env.static_server_on [description]
+ * @return {[type]}                              [description]
+ */
+if (process.env.static_server_on == true) {
+    let staticRouter = require('./router/static.js');
+    router.use('/api/v2/setData', staticRouter.routes());
+    const checkStaticPath = require('./lib/checkStaticPath.js');
+    // 文件检查机制
+    checkStaticPath.init()
+}
 
 app.use(router.routes());
 app.use(router.allowedMethods());
@@ -144,12 +152,14 @@ app.use(router.allowedMethods());
 app.host = SITE_CONF['host'];
 app.port = SITE_CONF['port'];
 
+
 /**
  * 具体的服务端口可以在config 目录中设置
  */
-
 let server = app.listen(app.port, app.host, function() {
-    console.log(chalk.green('Koa server listening on %s:%d'), server.address().address, server.address().port);
+    console.log(chalk.green('Reboot at: ') + chalk.red(dateformat((new Date()).getTime(),'yyyy.mm.dd / hh:MM:ss TT')));
+    console.log(chalk.green('Yuenode Server listening on %s:%d'), server.address().address, server.address().port);
     console.log(chalk.green('Process.env on: ') + chalk.blue(serverDetective.getEnv()));
     console.log(chalk.green('Server IP: ') + serverDetective.getIP());
+    console.log(chalk.green('You can visit:'));
 });

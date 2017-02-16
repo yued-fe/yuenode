@@ -6,12 +6,8 @@
 'use strict';
 
 const router = require('koa-router')();
-const views = require('co-views');
 const chalk = require('chalk');
-const request = require('co-request');
-const parse = require('co-body');
 const fs = require('co-fs');
-const dateFormat = require('dateformat');
 
 const serverDetective = require('../lib/serverDetective');
 const requestHandler = require('../lib/requestHandler');
@@ -21,8 +17,6 @@ const SITE_CONF = serverDetective.getSiteConf();
 const serverConf = serverDetective.getServerConf();
 const routerMap = serverDetective.getRouterMapConf();
 const templatePathPrefix = serverConf['views']['path_prefix'] || "";
-const staticConf = serverConf['static'];
-const Monitor = require("../lib/monitor");
 
 
 module.exports = function(path, options) {
@@ -42,10 +36,8 @@ module.exports = function(path, options) {
         var originHost = rawHeaders['host'];
 
         //如果配了前缀域名，例如local.或者dev等，域名需要去除这个
-        console.log('前缀域名' + templatePathPrefix);
         if (templatePathPrefix) {
             var pos = originHost.indexOf(templatePathPrefix);
-            console.log('===========');
             if (pos === 0) {
                 originHost = originHost.substr(templatePathPrefix.length);
             }
@@ -53,7 +45,6 @@ module.exports = function(path, options) {
 
         if ((/\:.*\d/i).test(originHost) == true) {
             originHost = originHost.replace(/\:.*\d/i, '');
-            console.log(originHost);
         }
 
         var routerDomain = requestHandler.getRouterDomain(originHost, this.request.path, '');

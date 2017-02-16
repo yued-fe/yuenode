@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * 起点域业务header cookie和useragent中间件
  * Author:罗磊
@@ -19,7 +21,7 @@
     href: 'http://localm.qidian.com:10301/error'
   }
  */
-'use strict';
+
 var url = require("url");
 
 var ClientHeader = function() {

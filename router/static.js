@@ -29,7 +29,6 @@ const Monitor = require("../lib/monitor");
 
 const fs = require('co-fs');
 const minify = require('html-minifier').minify;
-
 const STATIC_OUTPUT_PATH = serverConf.index;
 
 
@@ -56,7 +55,6 @@ var configRouter = function(val) {
 		console.log('*******START*********');
 		var that = this;
 		var result = that.request.body; //获得和解析post请求的json数据
-
 		var _routerVal = val;
 		var _staticPathVal = staticRouterMap[_routerVal].static; //获得待生成静态文件绝对路径
 		var _viewsPathVal = staticRouterMap[_routerVal].views;
@@ -67,13 +65,13 @@ var configRouter = function(val) {
 		result.envType = NODE_ENV;
 		result.staticConf = staticConf;
 
-		// 静态化服务没有cookie
+		// 静态化服务没有cookie,设置为undefined
 		this.state.cookie = undefined;
 		this.state.CLIENT_COOKIE = undefined;
+
 		/**
 		 * 透传服务器环境变量和静态资源配置
 		 */
-
 		console.log('当前接口:' + _routerVal);
 		console.log('待生成文件相对路径:' + JSON.stringify(_staticPathVal));
 		console.log('当前的读取模板:' + _viewsPathVal);
@@ -149,8 +147,6 @@ var configRouter = function(val) {
 		}
 		// console.log(minifyHtml);
 		//重新组合文件目录和文件名为一个变量
-
-
 		var _outputPathAndFileNameVal = _staticFilePathRaw + '/' + _staticFileNameRaw;
 		console.log('生成文件');
 		console.log(STATIC_OUTPUT_PATH + _staticPathVal);
