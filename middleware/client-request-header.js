@@ -22,21 +22,28 @@
   }
  */
 
-var url = require("url");
+const url = require('url');
+const serverDetective = require('../lib/serverDetective');
+const serverConf = serverDetective.getServerConf();
+
 
 var ClientHeader = function() {
   return function* ClientRequestHandler(next) {
-    var _thisHeader = this.request.header;
-    var _thisCookie = !!_thisHeader.cookie ? _thisHeader.cookie : '';
-    var _thisUserAgent = !!_thisHeader['user-agent'] ? _thisHeader['user-agent'] : 'NO USER-AGENT SET';
-    var _thisClientUrl = this.request.href;
-    var _thisUrlParse = url.parse(_thisClientUrl);
+
+    var userHeader = this.request.header;
+    var userCookie = !!userHeader.cookie ? userHeader.cookie : '';
+    var userUA = !!userHeader['user-agent'] ? userHeader['user-agent'] : 'NO USER-AGENT SET';
+    var userClientUrl = this.request.protocol + '://' + ( serverConf.domainPrefix || '') +  this.req.headers.host + this.request.url;
+    var userUrlParse = url.parse(userClientUrl);
+
+    // 将业务中较常使用到的COOKIE,UA,URL 等信息作为通用信息抛给前端业务方使用
     this.state = Object.assign(this.state, {
-      CLIENT_URL: _thisClientUrl,
-      cookie: _thisCookie,
-      CLIENT_COOKIE: _thisCookie,
-      CLIENT_UA: JSON.stringify(_thisUserAgent, null, 4),
-      LOCATION:_thisUrlParse
+      // CLIENT_HEADER:JSON.stringify(userHeader,null,4),
+      CLIENT_URL: userClientUrl,
+      cookie: userCookie,
+      CLIENT_COOKIE: userCookie,
+      CLIENT_UA: JSON.stringify(userUA, null, 4),
+      LOCATION:userUrlParse
     })
 
     console.log(this.state);

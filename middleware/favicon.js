@@ -34,7 +34,6 @@ module.exports = function(path, options) {
         var rawHeaders = {};
         Object.assign(rawHeaders, this.req.headers);
         var originHost = rawHeaders['host'];
-
         //如果配了前缀域名，例如local.或者dev等，域名需要去除这个
         if (templatePathPrefix) {
             var pos = originHost.indexOf(templatePathPrefix);

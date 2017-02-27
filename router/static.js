@@ -21,16 +21,14 @@ const SITE_CONF = serverDetective.getSiteConf();
 const serverConf = serverDetective.getServerConf(); //获得路由
 const staticRouterMap = serverDetective.getStaticRouterMapConf();
 const domainMap = serverDetective.getDomainMap(); //获得域名映射表
-const templatePathPrefix = serverConf['views']['path_prefix'] || "local";
+const templatePathPrefix = serverConf['views']['path_prefix'] || NODE_ENV; // 读取域名前置配置
 const staticConf = serverConf['static'];
 const Monitor = require("../lib/monitor");
-
 
 
 const fs = require('co-fs');
 const minify = require('html-minifier').minify;
 const STATIC_OUTPUT_PATH = serverConf.index;
-
 
 /**
  * 压缩配置
@@ -51,7 +49,6 @@ var minifyConf = {
 var configRouter = function(val) {
 
 	return function* customeRoutersHandler(next) {
-
 		console.log('*******START*********');
 		var that = this;
 		var result = that.request.body; //获得和解析post请求的json数据
@@ -69,15 +66,14 @@ var configRouter = function(val) {
 		this.state.cookie = undefined;
 		this.state.CLIENT_COOKIE = undefined;
 
-		/**
-		 * 透传服务器环境变量和静态资源配置
-		 */
+		// 默认封装一个全局性的<%= pageUpdateTime %> 变量供静态页面标记更新时间用
+		var _fileUpdateTimeStamp = result.timeStamp ? result.timeStamp : (new Date()).getTime();
+		result.pageUpdateTime = dateFormat(_fileUpdateTimeStamp, "yyyy-mm-dd,HH:MM:ss");
+
+		// 透传服务器环境变量和静态资源配置
 		console.log('当前接口:' + _routerVal);
 		console.log('待生成文件相对路径:' + JSON.stringify(_staticPathVal));
 		console.log('当前的读取模板:' + _viewsPathVal);
-		//默认封装一个全局性的<%= pageUpdateTime %> 变量供静态页面标记更新时间用
-		var _fileUpdateTimeStamp = result.timeStamp ? result.timeStamp : (new Date()).getTime();
-		result.pageUpdateTime = dateFormat(_fileUpdateTimeStamp, "yyyy-mm-dd,HH:MM:ss");
 		console.log('接口更新时间:' + result.pageUpdateTime);
 
 		//过滤不存在的路径
@@ -87,8 +83,8 @@ var configRouter = function(val) {
 		})
 
 		_splitStaticPathExtract = _.dropRight(_splitStaticPathExtract);
-		var _staticFilePathRaw = _splitStaticPathExtract.join('/');
 
+		var _staticFilePathRaw = _splitStaticPathExtract.join('/');
 
 		//获得最终生成的文件名,强制要求均以index.html或者fileName.html结尾
 		var _staticFileName = _.takeRight(_splitStaticPath)[0];
@@ -105,12 +101,11 @@ var configRouter = function(val) {
 		 * 服务器压缩会消耗一定的性能,产生大概50ms的响应延时
 		 * 压缩规则可以在 minifyConf 配置
 		 */
+
 		var minifyHtml;
 
 		//注意,务必设置writeResp为false,来调用ejs render string方法
 		result.writeResp = false;
-
-
 
 		try {
 			console.log('渲染前检查');
@@ -137,6 +132,7 @@ var configRouter = function(val) {
 
 		//render方法默认不需要后缀
 		let homeString = homePageRender;
+
 		try {
 			// 压缩HTML
 			minifyHtml = minify(homeString, minifyConf);
@@ -145,7 +141,7 @@ var configRouter = function(val) {
 			minifyHtml = homeString + '<!-- min -->';
 			console.error('HTML压缩失败:' + '\n' + err);
 		}
-		// console.log(minifyHtml);
+
 		//重新组合文件目录和文件名为一个变量
 		var _outputPathAndFileNameVal = _staticFilePathRaw + '/' + _staticFileNameRaw;
 		console.log('生成文件');
@@ -160,6 +156,7 @@ var configRouter = function(val) {
 			code: 200,
 			msg: '更新成功:' + STATIC_OUTPUT_PATH + _staticPathVal
 		}
+
 		console.error('成功生成文件:' + STATIC_OUTPUT_PATH + _staticPathVal);
 		console.log('*******END***********');
 	}
@@ -174,9 +171,10 @@ var configRouter = function(val) {
 for (var routerVal in staticRouterMap) {
 	var _routerVal = routerVal;
 	var _staticPathVal = staticRouterMap[routerVal];
+
 	console.error('接口:' + _routerVal + ' --> 对应文件:' + JSON.stringify(_staticPathVal.views));
-	router
-		.post(_routerVal, configRouter(_routerVal))
+
+	router.post(_routerVal, configRouter(_routerVal))
 }
 
 

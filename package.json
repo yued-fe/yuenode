@@ -27,7 +27,9 @@
     "koa-static": "^2.0.0",
     "lodash": "^4.5.1",
     "path": "^0.12.7",
-    "thunkify": "^2.1.2"
+    "qs": "^6.3.1",
+    "thunkify": "^2.1.2",
+    "winston": "^2.3.1"
   },
   "taf": {
     "platform": "147.taf.wsd.com",
@@ -37,7 +39,7 @@
     "node": 0,
     "set": "",
     "app": "QD",
-    "service": "QidianDynamicNodeServer"
+    "service": "yuenode"
   },
   "devDependencies": {
     "chalk": "^1.1.1",

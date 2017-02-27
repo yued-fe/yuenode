@@ -41,11 +41,12 @@ const qidianExtens = require('./middleware/extends');
 const ClientHeader = require('./middleware/client-request-header');
 const ChineseChecker = require('./middleware/chinese');
 
-
 //静态化所需要的其他模块
 const fs = require('co-fs');
-const filesDetective = require('./lib/filesDetective.js');
+const filesDetective = require('./lib/filesDetective');
 
+// 文件日志模块
+const loggerFile = require('./lib/logger');
 
 
 //在nginx无设置的情况下,配置默认的favicon规则路由,防止大量favicon的404请求被catch error
@@ -56,7 +57,8 @@ app.use(qidianExtens());
 app.use(ChineseChecker());
 app.use(reqInfo.reqHandler);
 app.use(ClientHeader())
-    // lb探测回包, DONT REMOVE
+
+// lb探测回包, DONT REMOVE
 app.use(function*(next) {
     if (this.request.path === '/monitor/monitor.jsp') {
         this.body = '0';
@@ -133,7 +135,7 @@ router.use('', commonRouter.routes());
  * @param  {[type]} process.env.static_server_on [description]
  * @return {[type]}                              [description]
  */
-if (process.env.static_server_on == true) {
+if (process.env.static_server_on == 'true') {
     let staticRouter = require('./router/static.js');
     router.use('/api/v2/setData', staticRouter.routes());
     const checkStaticPath = require('./lib/checkStaticPath.js');
@@ -148,16 +150,14 @@ app.use(router.allowedMethods());
 /**
  * 启动服务
  */
-
 app.host = SITE_CONF['host'];
 app.port = SITE_CONF['port'];
-
 
 /**
  * 具体的服务端口可以在config 目录中设置
  */
 let server = app.listen(app.port, app.host, function() {
-    console.log(chalk.green('Reboot at: ') + chalk.red(dateformat((new Date()).getTime(),'yyyy.mm.dd / hh:MM:ss TT')));
+    console.log(chalk.green('Reboot at: ') + chalk.red(dateformat((new Date()).getTime(), 'yyyy.mm.dd / hh:MM:ss TT')));
     console.log(chalk.green('Yuenode Server listening on %s:%d'), server.address().address, server.address().port);
     console.log(chalk.green('Process.env on: ') + chalk.blue(serverDetective.getEnv()));
     console.log(chalk.green('Server IP: ') + serverDetective.getIP());
