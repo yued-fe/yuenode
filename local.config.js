@@ -1,3 +1,6 @@
+
+var NODE_ENV = process.env.NODE_ENV || 'local';
+
 module.exports = {
   /**
    * 本地服务环境配置
@@ -10,7 +13,7 @@ module.exports = {
       env: {
         COMMON_VARIABLE: "true",
         NODE_SITE:"oversea", // NODE服务项目别名
-        NODE_ENV: "local", // 当前Node服务环境
+        NODE_ENV: NODE_ENV, // 当前Node服务环境
         port: 10500, // 服务端口
         stat: false, // 是否开启taf上报,默认关闭
         l5_on:false, // 是否开启L5 taf平台适用

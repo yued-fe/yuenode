@@ -14,15 +14,12 @@ const _ = require('lodash');
 const cookies = require('cookie');
 const qs = require('qs');
 
-
-
 const serverDetective = require('../lib/serverDetective');
 const requestHandler = require('../lib/requestHandler');
 const routersHandler = require('../lib/routersHandler');
 const NODE_ENV = serverDetective.getEnv();
 const serverConf = serverDetective.getServerConf();
 const routerMap = serverDetective.getRouterMapConf();
-// const domainMap = serverDetective.getDomainMap(); //获得域名映射表
 const templatePathPrefix = serverConf['views']['path_prefix'] || NODE_ENV;
 const staticConf = serverConf['static'];
 const Monitor = require('../lib/monitor');
@@ -30,6 +27,7 @@ const Monitor = require('../lib/monitor');
 /**
  * 由于L5需要服务器环境支持(依赖底层库),本地调试不载入L5模块防止出错。
  */
+
 var L5;
 if (process.env.l5_on == true) {
     L5 = require('../lib/co-l5');
@@ -43,7 +41,6 @@ if (process.env.l5_on == true) {
 function monitorReport(startTime, endTime, options) {
 
 }
-
 
 /**
  * 检查query字符串是否有问号开头
@@ -79,11 +76,7 @@ function getProxyQuery(searchQuery, rawRoute, that) {
             }
         }
 
-
-
         let proxyQueryResult = Object.assign(qs.parse(searchQuery), queryObj);
-
-        console.log(proxyQueryResult);
 
         searchQuery = qs.stringify(proxyQueryResult, {
             encode: false // 方便调试,关闭encode
@@ -92,7 +85,6 @@ function getProxyQuery(searchQuery, rawRoute, that) {
 
     // 如果query值存在且开头无问号,则自动补全
     searchQuery = queryStartMarkChecker(searchQuery);
-
     return searchQuery;
 }
 
@@ -166,7 +158,6 @@ var cgiRequest = function*(url, headers, options) {
     if (options) {
         Object.assign(_options, options);
     }
-
     let result;
     try {
         console.log("尝试请求后端:");
@@ -238,9 +229,7 @@ var configRouter = function(val, rawRoute) {
                 //由于是内网通讯,默认走http协议头
                 //如果 cgi 中有配置 query 值,默认都append到client端query值后面
                 pageRequestUrl = requestCgiUrl.url;
-
                 console.log('[Qidian]当前请求后台接口:' + pageRequestUrl);
-
                 // 后台根据host来区分后端业务server
                 if (serverConf['cgi']['domain']) {
                     rawHeaders.host = serverConf['cgi']['domain']; //指定Host到后端
@@ -321,8 +310,7 @@ var configRouter = function(val, rawRoute) {
  * 路由兼容加载
  * 对配置的路由做兼容处理,统一转成带host路由 和 完整路径views模式
  */
-console.log(chalk.blue('处理路由:'));
-var routes = routersHandler.parseRouterMap(routerMap);
+let routes = routersHandler.parseRouterMap(routerMap);
 
 /**
  * 遍历routermap.js 文件,所有的路由均有指定cgi接口匹配

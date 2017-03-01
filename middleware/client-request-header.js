@@ -38,7 +38,6 @@ var ClientHeader = function() {
 
     // 将业务中较常使用到的COOKIE,UA,URL 等信息作为通用信息抛给前端业务方使用
     this.state = Object.assign(this.state, {
-      // CLIENT_HEADER:JSON.stringify(userHeader,null,4),
       CLIENT_URL: userClientUrl,
       cookie: userCookie,
       CLIENT_COOKIE: userCookie,

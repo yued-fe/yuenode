@@ -6,8 +6,6 @@
  * url:http://git.code.oa.com/yuewen/yuenode
  */
 
-
-
 const koa = require('koa');
 const path = require('path');
 const request = require('co-request');
@@ -20,8 +18,6 @@ const app = koa();
 const dateformat = require('dateformat');
 const _ = require('lodash');
 
-
-
 /**
  * 框架机业务自定义中间件
  * @type {[type]}
@@ -32,7 +28,6 @@ const SITE_CONF = serverDetective.getSiteConf();
 const DEBUG = serverDetective.isDebug();
 const serverConf = serverDetective.getServerConf();
 const templatePath = serverConf['views']['path'];
-
 
 const reqInfo = require('./middleware/reqInfo');
 const render = require('./middleware/koa-qidian-ejs');
@@ -46,13 +41,14 @@ const fs = require('co-fs');
 const filesDetective = require('./lib/filesDetective');
 
 // 文件日志模块
-const loggerFile = require('./lib/logger');
-
+// const loggerFile = require('./lib/logger');
 
 //在nginx无设置的情况下,配置默认的favicon规则路由,防止大量favicon的404请求被catch error
 app.use(favicon());
+
 //这是一个神奇的中间件,支持自定义拓展方法
 app.use(qidianExtens());
+
 //起点域下通用的检查简繁体的插件
 app.use(ChineseChecker());
 app.use(reqInfo.reqHandler);
@@ -157,9 +153,11 @@ app.port = SITE_CONF['port'];
  * 具体的服务端口可以在config 目录中设置
  */
 let server = app.listen(app.port, app.host, function() {
+
     console.log(chalk.green('Reboot at: ') + chalk.red(dateformat((new Date()).getTime(), 'yyyy.mm.dd / hh:MM:ss TT')));
     console.log(chalk.green('Yuenode Server listening on %s:%d'), server.address().address, server.address().port);
     console.log(chalk.green('Process.env on: ') + chalk.blue(serverDetective.getEnv()));
     console.log(chalk.green('Server IP: ') + serverDetective.getIP());
-    console.log(chalk.green('You can visit:'));
+    console.log(chalk.green('Server NODE_ENV: ') + serverDetective.getEnv());
+    console.log(chalk.green('Get more info: ' + require('./package.json').url));
 });

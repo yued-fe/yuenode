@@ -76,25 +76,22 @@ exports = module.exports = function(app, settings) {
      * 不修改ejs原生模板,进行外部script type处理
      * 转换所有<script data="123" type="text/ejs-template"> </script>中的ejs
      */
-
     var Delimiter = settings.delimiter ? settings.delimiter : '%';
     var RegIgnore = /<script\b[^>]*type="text\/ejs-template"[^>]*>([\s\S]*?)<\/script>/gm;
     var REG_REPLACE_TAG = new RegExp('<' + Delimiter, 'gm');
     var REG_REPLACE_DOUBLE_TAG = new RegExp('<' + Delimiter + Delimiter + Delimiter, 'gm');
-    var _insideEjsLang = tpl.match(RegIgnore);
+    var insideEjsLang = tpl.match(RegIgnore);
 
     //只有script标签存在的时候才进行处理
-    if (!!_insideEjsLang && _insideEjsLang.length > 0) {
-
+    if (!!insideEjsLang && insideEjsLang.length > 0) {
       var i = 0;
-      for (i; i < _insideEjsLang.length; i++) {
-        var _thisUpdateEjs = _insideEjsLang[i].replace(REG_REPLACE_TAG, '<' + Delimiter + Delimiter);
+      for (i; i < insideEjsLang.length; i++) {
+        var _thisUpdateEjs = insideEjsLang[i].replace(REG_REPLACE_TAG, '<' + Delimiter + Delimiter);
         // 将 text/ejs-template 内容中的 '<%%%' 替换成 '<%', 后续由 ejs 编译
         var output = _thisUpdateEjs.replace(REG_REPLACE_DOUBLE_TAG, '<' + Delimiter);
-        tpl = tpl.replace(_insideEjsLang[i], output);
+        tpl = tpl.replace(insideEjsLang[i], output);
       }
     }
-
 
     var fn = ejs.compile(tpl, {
       filename: viewPath,
@@ -135,8 +132,6 @@ exports = module.exports = function(app, settings) {
     if (isZht) {
       html = html = Chinese.s2t(html);
     }
-
-
 
     var writeResp = context.writeResp === false ? false : (context.writeResp || settings.writeResp);
     if (writeResp) {

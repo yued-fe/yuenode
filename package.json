@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "author": "luolei",
   "description": "A Nodejs framework for Yuewen Group's project",
+  "url":"http://git.code.oa.com/yuewen/yuenode",
   "private": true,
   "dependencies": {
     "chalk": "^1.1.1",
