@@ -34,7 +34,7 @@ if (process.env.l5_on == true) {
 }
 
 /**
- * 上报逻辑
+ * 上报逻辑封装 @todo
  * @return {[type]} [description]
  */
 
