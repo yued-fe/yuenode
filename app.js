@@ -5,7 +5,7 @@
  * Author:luolei,yanxiang
  * url:http://git.code.oa.com/yuewen/yuenode
  */
-
+require('./lib/ejs-inline-template.js');
 const koa = require('koa');
 const path = require('path');
 const request = require('co-request');
