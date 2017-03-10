@@ -10,7 +10,7 @@ A Nodejs framework for Yuewen Group's project. 基于koa,适用于阅文web项�
 
 ####时间点
 
-
+* 2017.03.10 修正EJS的替换时序
 * 2017.02.27 增加路由rewrite支持
 * 2017.02.15 抛弃配置文件的形式,采用环境变量配置参数
 * 2017.02.08:抽离配置,创建项目
