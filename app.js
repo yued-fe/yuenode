@@ -40,7 +40,6 @@ const ChineseChecker = require('./middleware/chinese');
 const fs = require('co-fs');
 const filesDetective = require('./lib/filesDetective');
 
-// 文件日志模块
 
 //在nginx无设置的情况下,配置默认的favicon规则路由,防止大量favicon的404请求被catch error
 app.use(favicon());

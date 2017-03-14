@@ -14,6 +14,7 @@ module.exports = {
         COMMON_VARIABLE: "true",
         NODE_SITE:"oversea", // NODE服务项目别名
         NODE_ENV: NODE_ENV, // 当前Node服务环境
+        master_host:'m.qidian.com',// 配置业务
         port: 10500, // 服务端口
         stat: false, // 是否开启taf上报,默认关闭
         l5_on:false, // 是否开启L5 taf平台适用
