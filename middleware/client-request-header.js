@@ -45,6 +45,7 @@ var ClientHeader = function() {
       LOCATION:userUrlParse
     })
 
+    console.log('=====asd===a===a=sd==a=d=asd=')
     console.log(this.state);
     yield next;
   }

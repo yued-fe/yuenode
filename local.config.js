@@ -18,7 +18,7 @@ module.exports = {
         stat: false, // 是否开启taf上报,默认关闭
         l5_on:false, // 是否开启L5 taf平台适用
         cgi_ssl_on:false, // 后端是否采用https协议,内网服务默认关闭
-        path: "/Users/yuewen-luolei/Yuewen/Tencent/qidian-m/.cache/config",
+        path: "/Users/shilei/qidian-m/.cache/config",
         server_conf_file: "server", // 配置文件名,默认为 server.js
         routermap_file: "routes", // 动态路由映射文件名,默认为 dynamic_routermap
         static_server_on:false, // 静态化服务开启开关,默认关闭
