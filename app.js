@@ -107,7 +107,6 @@ let commonRouter = require('./router/common.js'); //通配路由
  * 为了提高服务器性能,开启cache
  * 模板发布后框架机通过后置脚本重启,所以无需考虑内存缓存问题
  */
-
 render(app, {
     root: templatePath,
     layout: false,

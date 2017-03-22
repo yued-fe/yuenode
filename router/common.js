@@ -20,9 +20,13 @@ const routersHandler = require('../lib/routersHandler');
 const NODE_ENV = serverDetective.getEnv();
 const serverConf = serverDetective.getServerConf();
 const routerMap = serverDetective.getRouterMapConf();
+const customHandler = serverDetective.getCustomHandler();
+
 const templatePathPrefix = serverConf['views']['path_prefix'] || NODE_ENV;
 const staticConf = serverConf['static'];
 const Monitor = require('../lib/monitor');
+
+
 
 /**
  * 由于L5需要服务器环境支持(依赖底层库),本地调试不载入L5模块防止出错。
@@ -283,8 +287,7 @@ var configRouter = function(val, rawRoute) {
                     //针对其他
                     try {
                         console.log("statusCode != 0 do handler");
-                        var handler = require("../handler/" + process.env.NODE_SITE);
-                        yield handler(that, body, pageRequestUrl);
+                        yield customHandler(that, body, pageRequestUrl);
                     } catch (err) {
                         console.error(err);
                         body.error = '后台接口:' + pageRequestUrl + ' 返回数据:' + JSON.stringify(body);
