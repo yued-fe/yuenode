@@ -8,6 +8,8 @@ const router = require('koa-router')();
 const chalk = require('chalk');
 const request = require('co-request');
 const url = require('url');
+const path = require('path');
+const dateFormat = require('dateformat');
 
 const getConfigs = require('../lib/getConfigs.js');
 const routerMap = getConfigs.getRouterMap();
@@ -17,7 +19,8 @@ const NODE_ENV = getConfigs.getEnv();
 
 // 去除host前缀，例如local、dev等，去除端口号
 function fixHost(host) {
-    host = host.replace(/^(local|dev|oa|pre)/i, '');
+    const reg = new RegExp('^' + NODE_ENV, 'i');
+    host = host.replace(reg, '');
     host = host.replace(/:\d*$/, '');
     return host;
 }
@@ -31,7 +34,7 @@ function fixHost(host) {
 function* fixCgi(cgi, params, reqQuery) {
 
     // 根据环境变量取得协议名，根据配置获得当前环境后端请求地址
-    const protocol = (process.env.cgi_ssl_on == 'true') ? 'https:' : 'http:';
+    const protocol = !!siteConf.cgi_ssl_on ? 'https:' : 'http:';
     const urlObj = url.parse(cgi, true, true);
 
     /**
@@ -160,7 +163,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
 
             body = JSON.parse(result.body);
 
-            // 如果后端返回错误，向外抛出
+            // 如果后端返回code不为0，向外抛出
             if (body.code !== 0) {
                 // 如果开启taf上报，则上报
                 if (!!siteConf.stat) {
@@ -168,30 +171,48 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                     monitor.report(m_options, 2, spendTime);
                 }
 
-                // 兼容以往配置的error handler
                 try {
-                    console.log(chalk.red('statusCode != 0 do handler'));
-                    var handler = require('../handler/' + process.env.NODE_SITE);
-                    yield handler(this, body, cgiUrl);
-                    return;
+                    // 如果开启了非0自定义handler，则执行
+                    if (!!siteConf.custom_handle_on) {
+                        console.log(chalk.red('statusCode != 0 do handler'));
+                        // 如果配置了自定义handler
+                        if (!!siteConf.custom_handle_file) {
+                            const errPath = path.join(siteConf.path, siteConf.custom_handle_file);
+                            const handler = require(errPath);
+                            yield handler(this, body, cgiUrl);
 
+                        // 兼容以往的handler
+                        } else {
+                            const errPath = path.join(process.cwd(), 'handler', process.env.NODE_SITE);
+                            const handler = require(errPath);
+                            yield handler(this, body, cgiUrl);
+                        }
+                    }
+
+                    // 在站点配置中开启强制渲染则跳过报错继续渲染
+                    if (!siteConf.force_render) {
+                        throw new Error('没有开启非0自定义handler');
+                    }
+                    
                 // 如果没有配置error handler，则抛出错误统一处理
                 } catch (err) {
                     let err = new Error(body.msg || '后台返回数据code不为0');
                     err.status = 500;
                     throw err;
                 }
-            }
 
-            // 如果开启taf上报，则上报
-            if (!!siteConf.stat) {
-                m_options.returnValue = body.code;
-                monitor.report(m_options, 1, spendTime);
-            }
+            // 如果后端返回code为0
+            } else {
+                // 如果开启taf上报，则上报
+                if (!!siteConf.stat) {
+                    m_options.returnValue = body.code;
+                    monitor.report(m_options, 1, spendTime);
+                }
 
-            // 设置注入逻辑,注入后台的 set-cookie 字段
-            if (result.headers && result.headers['set-cookie']) {
-                this.set('set-cookie', result.headers['set-cookie']);
+                // 设置注入逻辑,注入后台的 set-cookie 字段
+                if (result.headers && result.headers['set-cookie']) {
+                    this.set('set-cookie', result.headers['set-cookie']);
+                }
             }
 
         // 后台没有返回200，向外抛出
@@ -219,7 +240,10 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
     }
 
     // 传入 state 里的数据用于渲染
-    body = Object.assign({}, this.state, body);
+    body = Object.assign({
+        // 兼容静态化页面
+        pageUpdateTime: 'sync:' + (dateFormat((new Date()).getTime(), "yyyy-mm-dd,HH:MM:ss"))
+    }, this.state, body);
 
     // 渲染页面
     let html = this.render(currentConf.views, body);

@@ -18,15 +18,19 @@ module.exports = {
     // extends文件或文件夹名，如果是文件夹默认加载文件夹内的index，没有的话加载loader
     extends_file: 'extends',
     // 是否开启静态化服务
-    static_server_on: true, 
+    static_server_on: true,
     // 静态化路由配合文件,默认为 static_routermap
     static_routermap_file: 'static_routermap',
+    // 静态化服务后端接口，默认 /api/v2/setData
+    static_server_cgi: '/api/v2/setData',
     // 日志级别
-    log_level: 'info', 
+    log_level: 'info',
     // 是否开启非0自定义handler
     custom_handle_on: true, 
-    // 自定义handler路径,建议命名与项目别名统一
-    custom_handle_file: 'oversea', 
+    // 非0自定义handler文件路径
+    custom_handle_file: '',
+    // 是否开启非0继续渲染页面，主要针对静态化页面本地渲染，pageUpdateTime 上会加入 sync 标志
+    force_render: false,
 
     // 是否开启简繁体转换功能
     character_conversion: true,

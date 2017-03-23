@@ -77,7 +77,9 @@ module.exports = function onerror(app, options) {
             };
 
             // 渲染项目模板中的error.html
+            const errPath = path.join(serverConf.views.path,'error');
             try {
+                fs.statSync(errPath);
                 this.body = this.render('error', body);
             // 没有的话使用框架机中的error页面，不使用render防止是渲染出错
             } catch (err) {

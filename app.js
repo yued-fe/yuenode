@@ -73,7 +73,8 @@ if (!!siteConf.static_server_on) {
     }));
 
     // 启用静态化路由
-    router.use('/api/v2/setData', staticRouter.routes());
+    const staticCgi = !!siteConf.static_server_cgi ? siteConf.static_server_cgi : '/api/v2/setData';
+    router.use(staticCgi, staticRouter.routes());
 }
 
 // 启用路由
