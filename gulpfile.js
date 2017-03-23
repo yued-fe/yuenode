@@ -1,11 +1,9 @@
-var gulp = require('gulp');
-var nodemon = require('gulp-nodemon');
-var figlet = require('figlet');
-var chalk = require('chalk');
+const gulp = require('gulp');
+const nodemon = require('gulp-nodemon');
+const figlet = require('figlet');
+const chalk = require('chalk');
 
-var NODE_CONFIG = require('./local.config.js');
-
-
+const NODE_CONFIG = require('./local.config.js');
 
 gulp.task('nodemon', function() {
 
@@ -15,7 +13,7 @@ gulp.task('nodemon', function() {
 			console.dir(err);
 			return;
 		}
-		console.log(chalk.bold.green(data))
+		console.log(chalk.bold.green(data));
 	});
     nodemon({
         script: 'app.js',
@@ -24,6 +22,5 @@ gulp.task('nodemon', function() {
     }).on('restart');
 
 });
-
 
 gulp.task('default', ['nodemon']);

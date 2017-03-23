@@ -1,51 +1,28 @@
 {
-  "name": "yuenode",
-  "version": "1.0.1",
-  "author": "luolei",
+  "name": "yuenode-v2",
+  "version": "1.0.0",
+  "author": "shilei",
   "description": "A Nodejs framework for Yuewen Group's project",
-  "url":"http://git.code.oa.com/yuewen/yuenode",
-  "private": true,
+  "main": "app.js",
   "dependencies": {
-    "chalk": "^1.1.1",
+    "chalk": "^1.1.3",
     "chinese-s2t": "0.0.6",
-    "chokidar": "^1.4.3",
-    "co": "^4.6.0",
-    "co-body": "^4.0.0",
-    "co-fs": "^1.2.0",
     "co-request": "^1.0.0",
-    "co-views": "^2.1.0",
     "cookie": "^0.3.1",
-    "copy-to": "^2.0.1",
-    "dateformat": "^1.0.12",
-    "ejs": "^2.4.1",
-    "html-minifier": "^3.1.1",
-    "koa": "^1.2.0",
-    "koa-bodyparser": "^2.0.1",
-    "koa-ejs": "^3.0.0",
-    "koa-logger": "^1.2.2",
-    "koa-request": "^1.0.0",
-    "koa-router": "^5.1.2",
-    "koa-static": "^2.0.0",
-    "lodash": "^4.5.1",
-    "path": "^0.12.7",
-    "qs": "^6.3.1",
+    "dateformat": "^2.0.0",
+    "ejs": "^2.5.6",
+    "html-minifier": "^3.4.2",
+    "koa": "^1.3.0",
+    "koa-bodyparser": "^2.5.0",
+    "koa-logger": "^1.3.1",
+    "koa-onerror": "^3.1.0",
+    "koa-router": "^5.4.0",
     "thunkify": "^2.1.2",
-    "winston": "^2.3.1"
-  },
-  "taf": {
-    "platform": "147.taf.wsd.com",
-    "exclude": [
-      "node_modules"
-    ],
-    "node": 0,
-    "set": "",
-    "app": "QD",
-    "service": "yuenode"
+    "url": "^0.11.0"
   },
   "devDependencies": {
-    "chalk": "^1.1.1",
     "figlet": "^1.2.0",
-    "gulp": "^3.9.0",
-    "gulp-nodemon": "^2.0.6"
+    "gulp": "^3.9.1",
+    "gulp-nodemon": "^2.2.1"
   }
 }

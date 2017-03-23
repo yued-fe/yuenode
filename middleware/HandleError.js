@@ -1,0 +1,94 @@
+'use strict';
+
+/**
+ * 错误处理中间件，将所有抛出的错误在此统一处理
+ */
+
+const path = require('path');
+const fs = require('fs');
+const chalk = require('chalk');
+
+const getConfigs = require('../lib/getConfigs.js');
+const serverConf = getConfigs.getServerConf();
+const NODE_ENV = getConfigs.getEnv();
+
+// 默认不重定向
+const defaultOptions = {
+    redirect: null,
+};
+
+module.exports = function onerror(app, options) {
+    options = Object.assign({}, defaultOptions, options);
+
+    app.context.onerror = function(err) {
+        // don't do anything if there is no error.
+        // this allows you to pass `this.onerror`
+        // to node-style callbacks.
+        if (err === null) {
+            return;
+        }
+
+        // wrap non-error object
+        if (!(err instanceof Error)) {
+            const newError = new Error('non-error thrown: ' + err);
+            // err maybe an object, try to copy the name, message and stack to the new error instance
+            if (err) {
+                if (err.name) newError.name = err.name;
+                if (err.message) newError.message = err.message;
+                if (err.stack) newError.stack = err.stack;
+                if (err.status) newError.status = err.status;
+            }
+            err = newError;
+        }
+
+        const headerSent = this.headerSent || !this.writable;
+        if (headerSent) err.headerSent = true;
+
+        // delegate
+        this.app.emit('error', err, this);
+
+        // nothing we can do here other
+        // than delegate to the app-level
+        // handler and log.
+        if (headerSent) return;
+
+        // ENOENT support
+        if (err.code === 'ENOENT') {
+            err.status = 404;
+        }
+
+        if (typeof err.status !== 'number') {
+            err.status = 500;
+        }
+        this.status = err.status;
+
+        // 如果配置了错误重定向，则重定向
+        if (!!options.redirect) {
+            this.redirect(options.redirect);
+        } else {
+            // 渲染错误数据
+            let body = {
+                code: this.status,
+                envType: NODE_ENV,
+                staticConf: serverConf.static,
+                defaultSearch: { 'keywords': '' }, //兼容用
+                msg: err.message,
+                stack: err.stack
+            };
+
+            // 渲染项目模板中的error.html
+            try {
+                this.body = this.render('error', body);
+            // 没有的话使用框架机中的error页面，不使用render防止是渲染出错
+            } catch (err) {
+                const errPath = path.join(process.cwd(), 'views/error.html');
+                let errTxt = fs.readFileSync(errPath, 'utf8');
+                this.body = errTxt
+                    .replace('{{code}}', body.code)
+                    .replace('{{msg}}', body.msg)
+                    .replace('{{stack}}', body.stack);
+            }
+        }
+        this.res.end(this.body);
+    };
+};
