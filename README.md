@@ -4,9 +4,9 @@ A Nodejs framework for Yuewen Group's project
 ## 使用方法
 
 1. 执行 npm install
-2. 配置 local.config.js 中的环境变量，可以自己复制多份不同的环境变量
-3. 配置 siteConfig 中的各种文件位置、服务开关，可以自己复制多份不同的站点配置，如果文件名有修改就要在前一步配好此文件入口
-4. 用 pm2 或者 gulp 启动，如果第二步文件名有修改则需要在 gulpfile.js 中更改入口文件
+2. 配置 local.config.js 中的环境变量，可以自己复制多份不同的环境变量文件
+3. 配置 siteConfig 中的各种文件位置、服务开关，可以自己复制多份不同的站点配置，如果文件名有修改就要在第2步配好此文件入口
+4. 用 pm2 或者 gulp 启动，如果第2步文件名有修改则需要在 gulpfile.js 中更改入口文件
 
 ## 以往约定格式
 
