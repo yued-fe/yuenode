@@ -67,8 +67,6 @@ const configRouter = (routeConf, filePath, fileName) => function staticRoutersHa
     const result = this.request.body;
     console.log(chalk.blue('匹配到当前静态路由配置：\n'), routeConf);
 
-    console.log(arguments);
-
     // 默认封装一个全局性的<%= pageUpdateTime %>变量供静态页面标记更新时间用,传入请求数据、state数据用于渲染
     const updateTimeStamp = result.timeStamp ? result.timeStamp : (new Date()).getTime();
     let body = Object.assign({
@@ -82,8 +80,9 @@ const configRouter = (routeConf, filePath, fileName) => function staticRoutersHa
     } catch (err) {
         this.body = {
             code: 500,
-            msg: err.stack
+            msg: err.message
         };
+        this.status = 500;
         return false;
     }
 
@@ -93,6 +92,7 @@ const configRouter = (routeConf, filePath, fileName) => function staticRoutersHa
             code: 500,
             msg: '模板可能渲染出错,或者没有内容'
         };
+        this.status = 500;
         return false;
     }
 
@@ -125,6 +125,7 @@ const configRouter = (routeConf, filePath, fileName) => function staticRoutersHa
             code: 500,
             msg: `生成静态文件 ${viewPath + '/' + fileName} 失败，请检查是否有写入权限。`
         };
+        this.status = 500;
         return false;
     }
 };

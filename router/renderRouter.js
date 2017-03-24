@@ -89,18 +89,12 @@ function* requestCgi(url, headers, options) {
     }
     let result;
     try {
-        console.log(chalk.blue('尝试请求后端:'));
-        console.log(opt);
+        console.log(chalk.blue('尝试请求后端:'), opt.uri);
         result = yield request(opt);
-        console.log(chalk.blue('后端返回:'));
-        console.log(chalk.blue('statusCode: ' + result.statusCode));
-        console.log(chalk.blue('header: \n'),result.headers);
+        console.log(chalk.blue('后端返回statusCode:'), result.statusCode);
     } catch (err) {
-        if (err.code === 'ETIMEDOUT') {
-            throw new Error('请求超时');
-        } else {
-            throw new Error('后端通信失败: ' + err.code);
-        }
+        err.message = '请求后端接口失败: ' + err.message;
+        throw err;
     }
     return result;
 }
@@ -179,13 +173,13 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                         if (!!siteConf.custom_handle_file) {
                             const errPath = path.join(siteConf.path, siteConf.custom_handle_file);
                             const handler = require(errPath);
-                            yield handler(this, body, cgiUrl);
+                            handler(this, body, cgiUrl);
 
                         // 兼容以往的handler
                         } else {
                             const errPath = path.join(process.cwd(), 'handler', process.env.NODE_SITE);
                             const handler = require(errPath);
-                            yield handler(this, body, cgiUrl);
+                            handler(this, body, cgiUrl);
                         }
                     }
 

@@ -23,8 +23,6 @@ module.exports = {
     static_routermap_file: 'static_routermap',
     // 静态化服务后端接口，默认 /api/v2/setData
     static_server_cgi: '/api/v2/setData',
-    // 日志级别
-    log_level: 'info',
     // 是否开启非0自定义handler
     custom_handle_on: true, 
     // 非0自定义handler文件路径

@@ -4,7 +4,7 @@
 
 'use strict';
 
-const handler = function* (router,body,requestUrl) {
+const handler = function (router,body,requestUrl) {
 	const _statusCode = parseInt(body.code);
 	console.log("handler boss");
 	console.log("statusCode:" + _statusCode);
@@ -25,7 +25,7 @@ const handler = function* (router,body,requestUrl) {
             break;
         case 500:
         	body.msg = body.msg + "\n" + body.exception;
-            yield router.render('error', body);
+            router.render('error', body);
             break;
     }
 }

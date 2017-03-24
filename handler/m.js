@@ -5,7 +5,7 @@
 
 'use strict';
 
-const handler = function*(router, body, requestUrl) {
+const handler = function (router, body, requestUrl) {
     const _statusCode = parseInt(body.code);
     console.log("handler qd");
     console.log("statusCode:" + _statusCode);
@@ -24,7 +24,7 @@ const handler = function*(router, body, requestUrl) {
             router.status = 404;
             console.error('[LOG URL]' + _ClientURL);
             console.error('[LOG Cgi]' + requestUrl);
-            yield router.render('error', body);
+            router.render('error', body);
             break;
     }
 }

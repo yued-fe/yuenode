@@ -41,7 +41,7 @@ function dev(opts) {
     // request
     const start = Date.now();
     console.log(
-      chalk.bgGreen.white.bold(' --> ') + 
+      chalk.magenta.bold(' --> ') + 
       chalk.bold(' %s') + 
       chalk.gray(' %s'),
 
@@ -118,7 +118,7 @@ function log(ctx, start, len, err, event) {
     chalk.gray(' %s') +
     chalk[color](' %s') +
     chalk.gray(' %s') +
-    chalk.gray(' %s'),
+    chalk.gray(' %s \n'),
 
     ctx.originalUrl,
     status,

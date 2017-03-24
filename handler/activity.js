@@ -4,14 +4,14 @@
 
 'use strict';
 
-const handler = function*(router, body, requestUrl) {
+const handler = function (router, body, requestUrl) {
     const _statusCode = parseInt(body.code);
     console.log("handler activity");
     console.log("statusCode:" + _statusCode);
     switch (_statusCode) {
         case 1:
             body.msg = body.msg + "\n" + body.exception;
-            yield router.render('error', body);
+            router.render('error', body);
             break;
         case 1001:
             router.redirect(body.jumpUrl);

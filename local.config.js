@@ -12,6 +12,11 @@ module.exports = {
       name: 'yuenode',
       script: 'app.js',
       node_args: '--harmony',
+      log_file: 'log/combined.log',
+      out_file: 'log/out.log',
+      error_file: 'log/err.log',
+      merge_logs: true,
+      log_date_format : 'YYYY-MM-DD HH:mm:ss',
       env: {
         NODE_SITE: 'm', // NODE服务项目别名
         NODE_ENV: NODE_ENV, // 当前Node服务环境

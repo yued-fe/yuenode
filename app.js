@@ -89,12 +89,14 @@ const env = process.env;
 const IP = getConfigs.getIP();
 app.listen(env.port, () => {
 
-    console.log(chalk.magenta('= = = = = = = = = = = = = = = = = = = = = ='));
-    console.log(chalk.green('Reboot at: '), chalk.red(dateformat((new Date()).getTime(), 'yyyy-mm-dd HH:MM:ss')));
-    console.log(chalk.green('Server NODE_SITE: '), chalk.blue(env.NODE_SITE));
-    console.log(chalk.green('Server NODE_ENV: '), chalk.blue(env.NODE_ENV));
-    console.log(chalk.green('Server IP: '), chalk.bold(IP));
-    console.log(chalk.green('Yuenode Server is listening on port: '), chalk.bold(env.port));
-    console.log(chalk.magenta('= = = = = = = = = = = = = = = = = = = = = ='));
+    console.log(
+        chalk.green('\n = = = = = = = = = = = = = = = = = = = = = =\n'),
+        chalk.green('Reboot at: '), chalk.red(dateformat((new Date()).getTime(), 'yyyy-mm-dd HH:MM:ss')), '\n',
+        chalk.green('Server NODE_SITE: '), chalk.blue(env.NODE_SITE), '\n',
+        chalk.green('Server NODE_ENV: '), chalk.blue(env.NODE_ENV), '\n',
+        chalk.green('Server IP: '), chalk.bold(IP), '\n',
+        chalk.green('Yuenode Server is listening on port: '), chalk.bold(env.port), '\n',
+        chalk.green('= = = = = = = = = = = = = = = = = = = = = ='), '\n'
+    );
 });
 
