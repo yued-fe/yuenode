@@ -11,93 +11,12 @@ const url = require('url');
 const path = require('path');
 const dateFormat = require('dateformat');
 
+const handleRequest = require('../lib/handleRequest.js');
 const getConfigs = require('../lib/getConfigs.js');
 const routerMap = getConfigs.getRouterMap();
 const serverConf = getConfigs.getServerConf();
 const siteConf = getConfigs.getSiteConf();
 const NODE_ENV = getConfigs.getEnv();
-
-// 去除host前缀，例如local、dev等，去除端口号
-function fixHost(host) {
-    const reg = new RegExp('^' + NODE_ENV, 'i');
-    host = host.replace(reg, '');
-    host = host.replace(/:\d*$/, '');
-    return host;
-}
-
-/**
- * 处理cgi，补全协议、ip，合并query
- * @param   cgi        routerMap中的原始cgi
- * @param   params     类似 /book/:bookId/forum 这种请求url中的变量，从router中取得
- * @param   reqQuery   请求的query，与params共同用于合并出最后的query
- */
-function* fixCgi(cgi, params, reqQuery) {
-
-    // 根据环境变量取得协议名，根据配置获得当前环境后端请求地址
-    const protocol = !!siteConf.cgi_ssl_on ? 'https:' : 'http:';
-    const urlObj = url.parse(cgi, true, true);
-
-    /**
-     * 如果在站点配置中开启L5，则通过L5获得后台服务IP或者域名，否则默认使用配置文件中的ip地址
-     * 由于L5需要服务器环境支持(依赖底层库),本地调试不载入L5模块防止出错。
-     */
-    let ip = serverConf.cgi.ip;
-    if (!!siteConf.l5_on) {
-        // 检查能否启用L5
-        if (NODE_ENV !== 'local' && !serverConf.cgi.L5 && !serverConf.cgi.L5.enable) {
-            const L5 = require('../lib/co-l5.js');
-            const addr = yield L5.getAddr();
-            // 如果取得则使用
-            if (!!addr) ip = addr;
-        }
-    }
-
-    let fixedCgi = {
-        // 如果cgi有协议则采用，没有则根据环境变量添加
-        protocol: (!!urlObj.protocol ? urlObj.protocol : protocol),
-        // 如果cgi有域名则采用，没有则根据配置文件添加
-        host: (!!urlObj.host ? urlObj.host : ip),
-        pathname: urlObj.pathname,
-        // 合并query，权重: 请求 query < cgi query < 请求url变量
-        query: Object.assign(reqQuery, urlObj.query, params)
-    };
-
-    return {
-        cgiUrl: url.format(fixedCgi),
-        addr: ip
-    };
-}
-
-/**
- * 请求后端数据
- * @param  url           处理过的url
- * @param  headers       请求header
- * @param  options       请求选项
- */
-function* requestCgi(url, headers, options) {
-    let opt = {
-        'uri': url,
-        'method': 'GET',
-        'headers': headers,
-        'gzip': true, //支持自动解析gzip
-        'timeout': 5000,
-        'followRedirect': false
-    };
-
-    if (options) {
-        Object.assign(opt, options);
-    }
-    let result;
-    try {
-        console.log(chalk.blue('尝试请求后端:'), opt.uri);
-        result = yield request(opt);
-        console.log(chalk.blue('后端返回statusCode:'), result.statusCode);
-    } catch (err) {
-        err.message = '请求后端接口失败: ' + err.message;
-        throw err;
-    }
-    return result;
-}
 
 /**
  * 路由处理函数
@@ -105,7 +24,7 @@ function* requestCgi(url, headers, options) {
  */
 const configRouter = (routeConf) => function* renderRoutersHandler() {
     // 取得去除前缀和端口号的host
-    const host = fixHost(this.host);
+    const host = handleRequest.fixHost(this.host);
 
     // 取得当前请求的views和cgi配置
     let currentConf;
@@ -127,14 +46,14 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
     if (!!currentConf.cgi) {
 
         // 取得处理过的cgi请求路径，合并query
-        const {cgiUrl, addr} = yield fixCgi(currentConf.cgi, this.params, this.query);
+        const {cgiUrl, addr} = yield handleRequest.fixCgi(currentConf.cgi, this.params, this.query);
 
         // 取得header，根据环境指定后端host,后台根据host来区分后端业务server
         const header = Object.assign({}, this.headers, {host: serverConf.cgi.domain});
 
         // 发送请求
         const startTime = Date.now();
-        const result = yield requestCgi(cgiUrl, header);
+        const result = yield handleRequest.requestCgi(cgiUrl, header);
         const spendTime = (Date.now() - startTime) / 1000;
 
         // 如果站点配置中开启了taf上报，则执行
@@ -152,7 +71,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
             };
         }
 
-        // 后台返回200
+        // 如果后台返回200
         if (result.statusCode === 200) {
 
             body = JSON.parse(result.body);
@@ -209,7 +128,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                 }
             }
 
-        // 后台没有返回200，向外抛出
+        // 如果后台没有返回200，向外抛出
         } else {
             // 如果开启taf上报，则上报
             if (!!siteConf.stat) {

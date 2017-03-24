@@ -7,6 +7,7 @@ const dateformat = require('dateformat');
 
 const logger = require('./middleware/logger.js');
 const onerror = require('./middleware/HandleError.js');
+const favicon = require('./middleware/favicon.js');
 const addStateInfo = require('./middleware/addStateInfo.js');
 const ejsRender = require('./middleware/addEjsRender.js');
 const getConfigs = require('./lib/getConfigs.js');
@@ -26,6 +27,9 @@ if (!!siteConf.error_redirct && !!siteConf.error_redirct_path) {
     errOpt = {redirect: siteConf.error_redirct_path};
 }
 onerror(app, errOpt);
+
+// favicon
+app.use(favicon());
 
 // lb探测回包, DONT REMOVE
 app.use(function* (next) {
@@ -80,9 +84,6 @@ if (!!siteConf.static_server_on) {
 // 启用路由
 app.use(router.routes());
 app.use(router.allowedMethods());
-
-
-
 
 // 开启服务监听
 const env = process.env;
