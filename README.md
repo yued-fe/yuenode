@@ -43,9 +43,9 @@ module.exports.genConf = {
                 conf: {
                     MODID: 64138113,
                     CMDID: 851968,
-                },
-            },
-        },
+                }
+            }
+        }
     }
 }
 
