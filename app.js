@@ -2,10 +2,10 @@
 
 const app = require('koa')();
 const chalk = require('chalk');
-const logger = require('koa-logger');
 const router = require('koa-router')();
 const dateformat = require('dateformat');
 
+const logger = require('./middleware/logger.js');
 const onerror = require('./middleware/HandleError.js');
 const addStateInfo = require('./middleware/addStateInfo.js');
 const ejsRender = require('./middleware/addEjsRender.js');
@@ -89,12 +89,12 @@ const env = process.env;
 const IP = getConfigs.getIP();
 app.listen(env.port, () => {
 
-    console.log(chalk.magenta('= = = = = = = = = = = = = = = = = ='));
+    console.log(chalk.magenta('= = = = = = = = = = = = = = = = = = = = = ='));
     console.log(chalk.green('Reboot at: '), chalk.red(dateformat((new Date()).getTime(), 'yyyy-mm-dd HH:MM:ss')));
     console.log(chalk.green('Server NODE_SITE: '), chalk.blue(env.NODE_SITE));
     console.log(chalk.green('Server NODE_ENV: '), chalk.blue(env.NODE_ENV));
     console.log(chalk.green('Server IP: '), chalk.bold(IP));
-    console.log(chalk.green('Yuenode Server listening on'), chalk.bold(env.port));
-    console.log(chalk.magenta('= = = = = = = = = = = = = = = = = ='));
+    console.log(chalk.green('Yuenode Server is listening on port: '), chalk.bold(env.port));
+    console.log(chalk.magenta('= = = = = = = = = = = = = = = = = = = = = ='));
 });
 

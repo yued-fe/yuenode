@@ -30,7 +30,7 @@ function checkDirectory(dirPath) {
         fs.statSync(dirPath);
     } catch (err) {
         fs.mkdirSync(dirPath);
-        console.log(dirPath, chalk.cyan('静态化目录不存在，创建此文件目录。'));
+        console.log(chalk.cyan('静态化目录不存在，创建此文件目录:\n'), dirPath);
         try {
             fs.statSync(dirPath);
         } catch (err) {
