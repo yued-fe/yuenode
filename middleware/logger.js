@@ -41,7 +41,7 @@ function dev(opts) {
     // request
     const start = Date.now();
     console.log(
-      chalk.bgGreen.white.bold(' Request: ') + 
+      chalk.bgGreen.white.bold(' --> ') + 
       chalk.bold(' %s') + 
       chalk.gray(' %s'),
 
@@ -109,19 +109,17 @@ function log(ctx, start, len, err, event) {
     length = bytes(len);
   }
 
-  const upstream = err ? chalk.bgRed.white.bold(' Response: ')
-    : event === 'close' ? chalk.bgYellow.white.bold(' Response: ')
-    : chalk.bgGreen.white.bold(' Response: ');
+  const upstream = err ? chalk.bgRed.white.bold(' xxx ')
+    : event === 'close' ? chalk.bgYellow.white.bold(' -x- ')
+    : chalk.bgGreen.white.bold(' <-- ');
 
   console.log(
     upstream +
-    chalk.bold(' %s') +
     chalk.gray(' %s') +
     chalk[color](' %s') +
     chalk.gray(' %s') +
     chalk.gray(' %s'),
 
-    ctx.method,
     ctx.originalUrl,
     status,
     time(start),
