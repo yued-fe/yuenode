@@ -38,15 +38,6 @@ if (process.env.l5_on == true) {
 }
 
 /**
- * 上报逻辑
- * @return {[type]} [description]
- */
-
-function monitorReport(startTime, endTime, options) {
-
-}
-
-/**
  * 检查query字符串是否有问号开头
  * @param  {[type]} queryString [description]
  * @return {[type]}             [description]
@@ -79,11 +70,9 @@ function getProxyQuery(searchQuery, rawRoute, that) {
                 queryObj[customeRouteKey] = realSplit[i];
             }
         }
-
-        let proxyQueryResult = Object.assign(qs.parse(searchQuery), queryObj);
-
+        let proxyQueryResult = Object.assign(qs.parse(searchQuery.replace(/^\?/,'')), queryObj);
         searchQuery = qs.stringify(proxyQueryResult, {
-            encode: false // 方便调试,关闭encode
+            encodeValuesOnly:true
         })
     }
 
