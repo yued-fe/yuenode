@@ -43,7 +43,13 @@ function checkDirectory(dirPath) {
 // 启动时先检查一下静态资源文件根目录是否存在
 (function checkStaticRootPath() {
     // 读取静态文件根目录配置
-    const staticPath = serverConf.index.split('/').filter(n => n !== '');
+    let staticPath;
+    if (typeof serverConf.index === 'string') {
+        staticPath = serverConf.index.split('/').filter(n => n !== '');
+    } else {
+        // 兼容老写法
+        staticPath = serverConf.index.path.split('/').filter(n => n !== '');
+    }
     let pathArr = ['', ...staticPath];
 
     // 保存静态文件根目录
