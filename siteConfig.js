@@ -15,7 +15,7 @@ module.exports = {
     server_conf_file: 'server', 
     // 动态路由映射文件或文件夹名,默认为 routermap，如果是文件夹默认加载文件夹内的index
     routermap_file: 'routes', 
-    // extends文件或文件夹名，如果是文件夹默认加载文件夹内的index，没有的话加载loader
+    // extends文件或文件夹名，如果是文件夹默认加载文件夹内的index，没有index的话加载loader
     extends_file: 'extends',
     // 是否开启静态化服务
     static_server_on: true,

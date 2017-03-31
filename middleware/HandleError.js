@@ -8,6 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const chalk = require('chalk');
 
+const handleRequest = require('../lib/handleRequest.js');
 const getConfigs = require('../lib/getConfigs.js');
 const serverConf = getConfigs.getServerConf();
 const NODE_ENV = getConfigs.getEnv();
@@ -67,28 +68,36 @@ module.exports = function onerror(app, options) {
             this.redirect(options.redirect);
         } else {
             // 渲染错误数据
-            let body = {
+            let body = Object.assign(this.state, {
                 code: this.status,
                 envType: NODE_ENV,
                 staticConf: serverConf.static,
                 defaultSearch: { 'keywords': '' }, //兼容用
                 msg: err.message,
                 stack: err.stack
-            };
+            });
 
-            // 渲染项目模板中的error.html
-            const errPath = path.join(serverConf.views.path,'error');
             try {
+                // 渲染项目模板中的error.html
+                const host = handleRequest.fixHost(this.host);
+                const errPath = path.join(serverConf.views.path, host, 'error.html');
                 fs.statSync(errPath);
-                this.body = this.render('error', body);
-            // 没有的话使用框架机中的error页面，不使用render防止是渲染出错
+                this.body = this.render(path.join(host,'error'), body);
             } catch (err) {
-                const errPath = path.join(process.cwd(), 'views/error.html');
-                let errTxt = fs.readFileSync(errPath, 'utf8');
-                this.body = errTxt
-                    .replace('{{code}}', body.code)
-                    .replace('{{msg}}', body.msg)
-                    .replace('{{stack}}', body.stack);
+                try {
+                    // 没有的话渲染项目views根目录中的error.html
+                    const errPath = path.join(serverConf.views.path, 'error.html');
+                    fs.statSync(errPath);
+                    this.body = this.render('error', body);
+                } catch (err) {
+                    // 没有的话使用框架机中的error页面，不使用render防止是渲染出错
+                    const errPath = path.join(process.cwd(), 'views/error.html');
+                    let errTxt = fs.readFileSync(errPath, 'utf8');
+                    this.body = errTxt
+                        .replace('{{code}}', body.code)
+                        .replace('{{msg}}', body.msg)
+                        .replace('{{stack}}', body.stack);
+                }
             }
         }
         this.res.end(this.body);

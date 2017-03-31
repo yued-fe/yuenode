@@ -8,6 +8,23 @@ A Nodejs framework for Yuewen Group's project
 3. 配置 siteConfig 中的各种文件位置、服务开关，可以自己复制多份不同的站点配置，如果文件名有修改就要在第2步配好此文件入口
 4. 用 pm2 或者 gulp 启动，如果第2步文件名有修改则需要在 gulpfile.js 中更改入口文件
 
+## 可以在模板直接使用的全局变量
+
+```js
+CLIENT_URL      // [String] url
+cookie          // [String] cookie
+CLIENT_COOKIE   // [String] cookie
+CLIENT_UA       // [String] ua
+LOCATION        // [Object] location obj
+COOKIEOBJ       // [Object] cookie obj
+QUERYOBJ        // [Object] query obj
+
+staticConf      // [Object] 静态配置
+envType         // [String] 当前环境
+isZht           // [Boolean] 是否为繁体（如果开启）
+[Function]      // [Functions] extendsLoader（如果开启）
+```
+
 ## 以往约定格式
 
 ```js
