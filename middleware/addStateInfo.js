@@ -6,6 +6,7 @@
 
 const cookies = require('cookie');
 const url = require('url');
+const dateFormat = require('dateformat');
 
 const getConfigs = require('../lib/getConfigs.js');
 const NODE_ENV = getConfigs.getEnv();
@@ -47,6 +48,7 @@ module.exports = () => function* addStateInfo(next) {
         QUERYOBJ: userUrlParse.query,
 
         // 静态文件配置
+        pageUpdateTime: dateFormat((new Date()).getTime(), "yyyy-mm-dd,HH:MM:ss"),
         staticConf: (serverConf.static || ''),
         envType: NODE_ENV || ''
     });

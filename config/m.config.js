@@ -48,11 +48,14 @@ module.exports = {
           force_render: false, 
           // extends文件或文件夹名，如果是文件夹默认加载文件夹内的index，没有index的话加载loader
           extends_file: 'extends',
+          
+          // 是否开启简繁体转换功能
+          character_conversion: true,
+          // 是否开启 html 压缩
+          compressHTML: true,
 
           // 动态路由映射文件或文件夹名,默认为 routermap，如果是文件夹默认加载文件夹内的index
           routermap_file: 'routes', 
-          // 是否开启简繁体转换功能
-          character_conversion: true,
           // 是否开启 inline-ejs,提供忽略 <script type="text/ejs-template"></script> 功能
           inline_ejs: true,
           // 开启 inline-ejs后，可自定义 script 标签的 type 属性，默认为 text/ejs-template
@@ -62,15 +65,11 @@ module.exports = {
           static_server_on: true,
           // 静态化路由配合文件,默认为 static_routermap
           static_routermap_file: 'static_routermap',
-          // 静态化服务后端接口，默认 /api/v2/setData
+          // 静态化服务原有后端接口，默认 /api/v2/setData，后端post所有页面数据，不使用改为空字符串即可
           static_server_cgi: '/api/v2/setData',
-          // 是否开启静态化文件压缩
-          minify_static_file: true,
-          // 静态化文件压缩选项，可以根据html-minifier配置自由搭配
-          minify_config: {
-              collapseWhitespace: true,    //删除空格
-              collapseInlineTagWhitespace: true    //删除行内属性空格
-          },
+          // 新静态化接口，默认 /api/setStatic，后端post动态路由的路径，不使用改为空字符串即可
+          // post范例 {domain: 'm.qidian.com', path: '/', staticPath: '/m.qidian.com/female/index.html'}
+          static_server_newCgi: '/api/setStatic',
         })
       }
     }

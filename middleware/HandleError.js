@@ -8,7 +8,7 @@ const path = require('path');
 const fs = require('fs');
 const chalk = require('chalk');
 
-const handleRequest = require('../lib/handleRequest.js');
+const utils = require('../lib/utils.js');
 const getConfigs = require('../lib/getConfigs.js');
 const serverConf = getConfigs.getServerConf();
 const NODE_ENV = getConfigs.getEnv();
@@ -68,7 +68,7 @@ module.exports = function onerror(app, options) {
             this.redirect(options.redirect);
         } else {
             // 渲染错误数据
-            let body = Object.assign(this.state, {
+            let body = Object.assign({}, this.state, {
                 code: this.status,
                 envType: NODE_ENV,
                 staticConf: serverConf.static,
@@ -79,7 +79,7 @@ module.exports = function onerror(app, options) {
 
             try {
                 // 渲染项目模板中的error.html
-                const host = handleRequest.fixHost(this.host);
+                const host = utils.fixHost(this.host);
                 const errPath = path.join(serverConf.views.path, host, 'error.html');
                 fs.statSync(errPath);
                 this.body = this.render(path.join(host,'error'), body);

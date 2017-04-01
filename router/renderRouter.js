@@ -9,14 +9,16 @@ const chalk = require('chalk');
 const request = require('co-request');
 const url = require('url');
 const path = require('path');
-const dateFormat = require('dateformat');
 
-const handleRequest = require('../lib/handleRequest.js');
+const utils = require('../lib/utils.js');
 const getConfigs = require('../lib/getConfigs.js');
 const routerMap = getConfigs.getRouterMap();
 const serverConf = getConfigs.getServerConf();
 const siteConf = getConfigs.getSiteConf();
 const NODE_ENV = getConfigs.getEnv();
+
+// 静态文件根目录
+let staticRoot = utils.checkStaticRootPath(serverConf.index);
 
 /**
  * 路由处理函数
@@ -24,7 +26,7 @@ const NODE_ENV = getConfigs.getEnv();
  */
 const configRouter = (routeConf) => function* renderRoutersHandler() {
     // 取得去除前缀和端口号的host
-    const host = handleRequest.fixHost(this.host);
+    const host = utils.fixHost(this.host);
 
     // 取得当前请求的views和cgi配置
     let currentConf;
@@ -46,15 +48,13 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
     if (!!currentConf.cgi) {
 
         // 取得处理过的cgi请求路径，合并query
-        const {cgiUrl, addr} = yield handleRequest.fixCgi(currentConf.cgi, this.params, this.query);
+        const {cgiUrl, addr} = yield utils.fixCgi(currentConf.cgi, this.params, this.query);
 
         // 取得header，根据环境指定后端host,后台根据host来区分后端业务server
         const header = Object.assign({}, this.headers, {host: serverConf.cgi.domain});
 
         // 发送请求
-        const startTime = Date.now();
-        const result = yield handleRequest.requestCgi(cgiUrl, header);
-        const spendTime = (Date.now() - startTime) / 1000;
+        const {result, spendTime} = yield utils.requestCgi(cgiUrl, header);
 
         // 如果站点配置中开启了taf上报，则执行
         let monitor, m_options;
@@ -87,7 +87,6 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                 try {
                     // 如果开启了非0自定义handler，则执行
                     if (!!siteConf.custom_handle_on) {
-                        console.log(chalk.red('statusCode != 0 do handler'));
                         // 如果配置了自定义handler
                         if (!!siteConf.custom_handle_file) {
                             const errPath = path.join(siteConf.path, siteConf.custom_handle_file);
@@ -153,13 +152,13 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
     }
 
     // 传入 state 里的数据用于渲染
-    body = Object.assign({
-        // 兼容静态化页面
-        pageUpdateTime: 'sync:' + (dateFormat((new Date()).getTime(), "yyyy-mm-dd,HH:MM:ss"))
-    }, this.state, body);
+    body = Object.assign({}, this.state, body);
 
     // 渲染页面
     let html = this.render(currentConf.views, body);
+
+    // 压缩 html
+    html = utils.compressHTML(html);
 
     // 如果在设置中开启简繁体转换功能，则根据 cookie 中的简繁体设置，转换相应渲染内容
     if (!!siteConf.character_conversion) {

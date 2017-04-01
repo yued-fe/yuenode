@@ -10,58 +10,14 @@ const dateFormat = require('dateformat');
 const fs = require('fs');
 const path = require('path');
 
+const utils = require('../lib/utils.js');
 const getConfigs = require('../lib/getConfigs.js');
 const staticRouterMap = getConfigs.getStaticRouterMap();
 const serverConf = getConfigs.getServerConf();
 const siteConf = getConfigs.getSiteConf();
 
 // 静态文件根目录
-let staticRoot;
-
-// 压缩配置
-let minifyConf = {
-    collapseWhitespace: true,    //删除空格
-    collapseInlineTagWhitespace: true    //删除行内属性空格
-};
-
-// 检查文件夹是否存在,若不存在则创建
-function checkDirectory(dirPath) {
-    try {
-        fs.statSync(dirPath);
-    } catch (err) {
-        fs.mkdirSync(dirPath);
-        console.log(chalk.cyan('静态化目录不存在，创建此文件目录:\n'), dirPath);
-        try {
-            fs.statSync(dirPath);
-        } catch (err) {
-            console.log(chalk.red('创建静态化目录 %s 失败！请确认有写入权限。'), dirPath);
-            throw new Error(`创建静态化目录失败`);
-        }
-    }
-}
-
-// 启动时先检查一下静态资源文件根目录是否存在
-(function checkStaticRootPath() {
-    // 读取静态文件根目录配置
-    let staticPath;
-    if (typeof serverConf.index === 'string') {
-        staticPath = serverConf.index.split('/').filter(n => n !== '');
-    } else {
-        // 兼容老写法
-        staticPath = serverConf.index.path.split('/').filter(n => n !== '');
-    }
-    let pathArr = ['', ...staticPath];
-
-    // 保存静态文件根目录
-    staticRoot = pathArr.join('/');
-
-    // 检查是否存在，不存在则创建
-    pathArr.reduce((pre, next) => {
-        let curPath = pre + '/' + next;
-        checkDirectory(curPath);
-        return curPath;
-    });
-}());
+let staticRoot = utils.checkStaticRootPath(serverConf.index);
 
 /**
  * 静态化处理函数
@@ -70,14 +26,10 @@ function checkDirectory(dirPath) {
  * @param  {string} fileName  要生成的文件名
  */
 const configRouter = (routeConf, filePath, fileName) => function staticRoutersHandler() {
-    const result = this.request.body;
     console.log(chalk.blue('匹配到当前静态路由配置：\n'), routeConf);
 
-    // 默认封装一个全局性的<%= pageUpdateTime %>变量供静态页面标记更新时间用,传入请求数据、state数据用于渲染
-    const updateTimeStamp = result.timeStamp ? result.timeStamp : (new Date()).getTime();
-    let body = Object.assign({
-        pageUpdateTime: dateFormat(updateTimeStamp, "yyyy-mm-dd,HH:MM:ss")
-    }, this.state, this.request.body);
+    // 传入请求数据、state数据用于渲染
+    let body = Object.assign({}, this.state, this.request.body);
 
     // 渲染页面
     let html;
@@ -102,19 +54,8 @@ const configRouter = (routeConf, filePath, fileName) => function staticRoutersHa
         return false;
     }
 
-    // 如果站点配置中开启了静态化文件压缩，则执行压缩
-    if (!!siteConf.minify_static_file) {
-        const minify = require('html-minifier').minify;
-        try {
-            // 压缩HTML
-            let minifyHtml = minify(html, minifyConf);
-            html = minifyHtml;
-        } catch (err) {
-            // 若压缩失败,则使用原始HTML,且在尾部增加tag标记,供debug用
-            html += '<!-- min -->';
-            console.log(chalk.red('HTML压缩失败: \n'), err);
-        }
-    }
+    // 压缩 html
+    html = utils.compressHTML(html);
 
     // 生成静态文件
     const viewPath = path.join(filePath, fileName);
@@ -150,12 +91,12 @@ for (let [route, routeConf] of Object.entries(staticRouterMap)) {
     let filePath;
     pathArr.reduce((pre, next) => {
         filePath = pre + '/' + next;
-        checkDirectory(filePath);
+        utils.checkDirectory(filePath);
         return filePath;
     });
 
-    
     router.post(route, configRouter(routeConf, filePath, fileName));
 }
+
 
 module.exports = router;
