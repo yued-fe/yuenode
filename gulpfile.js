@@ -3,7 +3,7 @@ const nodemon = require('gulp-nodemon');
 const figlet = require('figlet');
 const chalk = require('chalk');
 
-const NODE_CONFIG = require('./local.config.js');
+const NODE_CONFIG = require('./config/m.config.js');
 
 gulp.task('nodemon', function() {
 
