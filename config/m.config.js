@@ -44,7 +44,7 @@ module.exports = {
           error_redirct: false,
           // 如果开启错误重定向，则定向到此路径
           error_redirct_path: '',
-          // 是否开启非0继续渲染页面，主要针对静态化页面本地渲染，pageUpdateTime 上会加入 sync 标志
+          // 是否开启非0继续渲染页面，主要针对数据格式错误，比如body没有code，只含有data
           force_render: false, 
           // extends文件或文件夹名，如果是文件夹默认加载文件夹内的index，没有index的话加载loader
           extends_file: 'extends',
@@ -67,7 +67,7 @@ module.exports = {
           static_routermap_file: 'static_routermap',
           // 静态化服务原有后端接口，后端post所有页面数据，不使用此静态化接口改为空字符串即可
           static_server_cgi: '/api/v2/setData',
-          // 新静态化接口，复用动态路由，后端post动态路由的路径，使用则注意在动态路由加入 static 字段，不使用此静态化接口改为空字符串即可
+          // 新静态化接口，复用动态路由，使用则注意在动态路由加入static字段，后端post请求动态路由，不需要传body数据，不使用此静态化接口改为空字符串即可
           static_dynamic_router: '/api/setStatic',
         })
       }

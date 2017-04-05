@@ -23,5 +23,5 @@ module.exports = () => function* favicon(next) {
 
     this.set('Cache-Control', 'public, max-age=86400');
     this.type = 'image/x-icon';
-    this.body = fs.readFile(iconPath);
+    this.body = fs.readFileSync(iconPath);
 };

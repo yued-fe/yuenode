@@ -1,5 +1,7 @@
 # 新版node框架机简介
 
+[TOC]
+
 ## 文件目录结构
 ```js
 yuenode
@@ -108,11 +110,10 @@ module.exports = {
           static_server_on: true,
           // 静态化路由配合文件,默认为 static_routermap
           static_routermap_file: 'static_routermap',
-          // 静态化服务原有后端接口，默认 /api/v2/setData，后端post所有页面数据，不使用改为空字符串即可
+          // 静态化服务原有后端接口，后端post所有页面数据，不使用此静态化接口改为空字符串即可
           static_server_cgi: '/api/v2/setData',
-          // 新静态化接口，默认 /api/setStatic，后端post动态路由的路径，不使用改为空字符串即可
-          // post范例 {domain: 'm.qidian.com', path: '/', staticPath: '/m.qidian.com/female/index.html'}
-          static_server_newCgi: '/api/setStatic',
+          // 新静态化接口，复用动态路由，使用则注意在动态路由加入static字段，后端post请求动态路由，不需要传body数据，不使用此静态化接口改为空字符串即可
+          static_dynamic_router: '/api/setStatic',
         })
       }
     }
@@ -120,21 +121,36 @@ module.exports = {
 };
 ```
 
-## 可以在模板直接使用的全局变量
+## 可以在模板直接使用的全局变量 yuenode
 
 ```js
-CLIENT_URL      // [String] url
-cookie          // [String] cookie
-CLIENT_COOKIE   // [String] cookie
-CLIENT_UA       // [String] ua
-LOCATION        // [Object] location obj
-COOKIEOBJ       // [Object] cookie obj
-QUERYOBJ        // [Object] query obj
+// yuenode
+{
+  ua              // [String] user-agent
+  location        // [Object] location obj
+  cookie          // [Object] cookie obj
 
-staticConf      // [Object] 静态配置
-envType         // [String] 当前环境
-isZht           // [Boolean] 是否为繁体（如果开启）
-[Function]      // [Functions] extendsLoader（如果开启）
+  pageUpdateTime  // [String] 时间
+  staticConf      // [Object] 静态配置
+  envType         // [String] 当前环境
+                  // extends（如果开启）
+}
+
+// yuenode.location
+{
+  protocol: 'http:',
+  slashes: true,
+  auth: null,
+  host: 'localm.qidian.com:10500',
+  port: '10500',
+  hostname: 'localm.qidian.com',
+  hash: null,
+  search: '?a=1',
+  query: { a: '1' },
+  pathname: '/fans',
+  path: '/fans?a=1',
+  href: 'http://localm.qidian.com:10500/fans?a=1' }
+}
 ```
 
 ## 以往约定格式
@@ -216,3 +232,8 @@ module.exports = {
     }
 }
 ```
+
+## 原有项目迁移
+
+1. 要将配置文件修改为现有形式，具体可关注 配置文件 一节
+2. 以往模板渲染的一些变量如CLIENT_URL、cookie等现在已经整合到全局变量 yuenode 中，具体可关注 可以在模板直接使用的全局变量 yuenode 一节

@@ -61,11 +61,10 @@ let staticRoot = checkStaticRootPath(serverConf.index);
  * 生成静态页面
  * @param  {[type]} ctx       this
  * @param  {[type]} routeConf 路由配置
- * @param  {[type]} filePath  路由配置
- * @param  {[type]} fileName  路由配置
+ * @param  {[type]} viewPath  生成静态文件路径
  * @param  {[type]} data      数据
  */
-function writeStaticFile(ctx, routeConf, filePath, fileName, data) {
+function writeStaticFile(ctx, routeConf, viewPath, data) {
     let html;
     try {
         html = ctx.render(routeConf.views, data);
@@ -92,22 +91,56 @@ function writeStaticFile(ctx, routeConf, filePath, fileName, data) {
     html = utils.compressHTML(html);
 
     // 生成静态文件
-    const viewPath = path.join(filePath, fileName);
     try {
         fs.writeFileSync(viewPath, html, 'utf8');
-        console.log(chalk.green('生成静态文件 %s 成功。'), viewPath + '/' + fileName);
+        console.log(chalk.green('生成静态文件 %s 成功。'), viewPath);
         ctx.body = {
             code: 0,
-            msg: `生成静态文件 ${viewPath + '/' + fileName} 成功。`
+            msg: `生成静态文件 ${viewPath} 成功。`
         };
     } catch (err) {
-        console.log(chalk.red('生成静态文件 %s 失败，请检查是否有写入权限。'), viewPath + '/' + fileName);
+        console.log(chalk.red('生成静态文件 %s 失败，请检查是否有写入权限。'), viewPath);
         ctx.body = {
             code: 500,
-            msg: `生成静态文件 ${viewPath + '/' + fileName} 失败，请检查是否有写入权限。`
+            msg: `生成静态文件 ${viewPath} 失败，请检查是否有写入权限。`
         };
         ctx.status = 500;
         return false;
+    }
+}
+
+/**
+ * 配置路由
+ * @param  routerMap 
+ * @param  router    router 实例
+ * @param  configFn  配置函数
+ */
+function setRouter(routerMap, router, configFn) {
+    for (let [route, routeConf] of Object.entries(routerMap)) {
+        // 如果动态路由配置了静态化，则启用静态化
+        if (!!routeConf.static) {
+            // 检查每个路由配置的文件夹是否存在
+            const staticPath = routeConf.static.split('/').filter(n => n !== '');
+            let pathArr = [staticRoot, ...staticPath];
+            // 如果以路径以 .html 结尾，就将其作为静态生成文件的文件名，否则将路径全部视为文件夹，文件名默认用 index.html
+            let fileName = 'index.html';
+            if (pathArr[pathArr.length-1].endsWith('.html')) {
+                fileName = pathArr.splice(-1)[0];
+            }
+
+            // 检查静态文件生成目录是否存在，不存在则创建
+            let filePath;
+            pathArr.reduce((pre, next) => {
+                filePath = pre + '/' + next;
+                checkDirectory(filePath);
+                return filePath;
+            });
+            
+            // 路由path不以'/'开头的则补全
+            route = route.startsWith('/') ? route : '/' + route;
+            const viewPath = path.join(filePath, fileName);
+            router.post(route, configFn(routeConf, viewPath));
+        }
     }
 }
 
@@ -119,39 +152,20 @@ if (!!siteConf.static_server_cgi) {
     /**
      * 静态化处理函数
      * @param  {object} routeConf 路由配置
-     * @param  {string} filePath  要生成的文件路径
-     * @param  {string} fileName  要生成的文件名
+     * @param  {string} viewPath  要生成的文件路径
      */
-    const configRouter = (routeConf, filePath, fileName) => function staticRoutersHandler() {
+    const configRouter = (routeConf, viewPath) => function staticRoutersHandler() {
         console.log(chalk.blue('匹配到当前静态路由配置：\n'), routeConf);
 
         // 传入请求数据、state数据用于渲染
         let body = Object.assign({}, this.state, this.request.body);
 
         // 生成静态页面
-        writeStaticFile(this, routeConf, filePath, fileName, body);
+        writeStaticFile(this, routeConf, viewPath, body);
     };
 
-    for (let [route, routeConf] of Object.entries(staticRouterMap)) {
-        // 检查每个路由配置的文件夹是否存在
-        const staticPath = routeConf.static.split('/').filter(n => n !== '');
-        let pathArr = [staticRoot, ...staticPath];
-        // 如果以路径以 .html 结尾，就将其作为静态生成文件的文件名，否则将路径全部视为文件夹，文件名默认用 index.html
-        let fileName = 'index.html';
-        if (pathArr[pathArr.length-1].endsWith('.html')) {
-            fileName = pathArr.splice(-1)[0];
-        }
-
-        // 检查静态文件生成目录是否存在，不存在则创建
-        let filePath;
-        pathArr.reduce((pre, next) => {
-            filePath = pre + '/' + next;
-            checkDirectory(filePath);
-            return filePath;
-        });
-
-        staticRouter.post(route, configRouter(routeConf, filePath, fileName));
-    }
+    // 设置路由
+    setRouter(staticRouterMap, staticRouter, configRouter);
 
     // 导出原有静态化路由
     exports.staticRouter = staticRouter;
@@ -165,10 +179,9 @@ if (!!siteConf.static_dynamic_router) {
     /**
      * 静态化处理函数
      * @param  {object} routeConf 路由配置
-     * @param  {string} filePath  要生成的文件路径
-     * @param  {string} fileName  要生成的文件名
+     * @param  {string} viewPath  要生成的文件路径
      */
-    const configRouter = (routeConf, filePath, fileName) => function* staticRoutersHandler() {
+    const configRouter = (routeConf, viewPath) => function* staticRoutersHandler() {
         console.log(chalk.blue('匹配到当前静态路由配置：\n'), routeConf);
 
         // 取得去除前缀和端口号的host
@@ -222,32 +235,11 @@ if (!!siteConf.static_dynamic_router) {
         body = Object.assign({}, this.state, body);
 
         // 生成静态页面
-        writeStaticFile(this, routeConf, filePath, fileName, body);
+        writeStaticFile(this, routeConf, viewPath, body);
     };
 
-    for (let [route, routeConf] of Object.entries(dynamicRouterMap)) {
-        // 如果动态路由配置了静态化，则启用静态化
-        if (!!routeConf.static) {
-            // 检查每个路由配置的文件夹是否存在
-            const staticPath = routeConf.static.split('/').filter(n => n !== '');
-            let pathArr = [staticRoot, ...staticPath];
-            // 如果以路径以 .html 结尾，就将其作为静态生成文件的文件名，否则将路径全部视为文件夹，文件名默认用 index.html
-            let fileName = 'index.html';
-            if (pathArr[pathArr.length-1].endsWith('.html')) {
-                fileName = pathArr.splice(-1)[0];
-            }
-
-            // 检查静态文件生成目录是否存在，不存在则创建
-            let filePath;
-            pathArr.reduce((pre, next) => {
-                filePath = pre + '/' + next;
-                checkDirectory(filePath);
-                return filePath;
-            });
-
-            staticDynamicRouter.post(route, configRouter(routeConf, filePath, fileName));
-        }
-    }
+    // 设置路由
+    setRouter(dynamicRouterMap, staticDynamicRouter, configRouter);
 
     // 导出复用动态路由的静态化路由
     exports.staticDynamicRouter = staticDynamicRouter;

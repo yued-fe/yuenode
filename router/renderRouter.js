@@ -17,9 +17,6 @@ const serverConf = getConfigs.getServerConf();
 const siteConf = getConfigs.getSiteConf();
 const NODE_ENV = getConfigs.getEnv();
 
-// 静态文件根目录
-let staticRoot = utils.checkStaticRootPath(serverConf.index);
-
 /**
  * 路由处理函数
  * @param routeConf    当前请求在routerMap中的配置
@@ -163,7 +160,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
     // 如果在设置中开启简繁体转换功能，则根据 cookie 中的简繁体设置，转换相应渲染内容
     if (!!siteConf.character_conversion) {
         const Chinese = require('chinese-s2t');
-        let isZht = body.Zht === false ? false : body.isZht;
+        let isZht = body.Zht === false ? false : body.yuenode.isZht;
         if (isZht) {
             html = Chinese.s2t(html);
         }
