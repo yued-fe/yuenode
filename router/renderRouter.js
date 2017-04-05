@@ -108,7 +108,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                     
                 // 如果没有配置error handler，则抛出错误统一处理
                 } catch (err) {
-                    let err = new Error(body.msg || '后台返回数据code不为0');
+                    let err = new Error(body.msg || '请求后端返回数据code不为0');
                     err.status = 500;
                     throw err;
                 }

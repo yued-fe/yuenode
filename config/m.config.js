@@ -65,11 +65,10 @@ module.exports = {
           static_server_on: true,
           // 静态化路由配合文件,默认为 static_routermap
           static_routermap_file: 'static_routermap',
-          // 静态化服务原有后端接口，默认 /api/v2/setData，后端post所有页面数据，不使用改为空字符串即可
+          // 静态化服务原有后端接口，后端post所有页面数据，不使用此静态化接口改为空字符串即可
           static_server_cgi: '/api/v2/setData',
-          // 新静态化接口，默认 /api/setStatic，后端post动态路由的路径，不使用改为空字符串即可
-          // post范例 {domain: 'm.qidian.com', path: '/', staticPath: '/m.qidian.com/female/index.html'}
-          static_server_newCgi: '/api/setStatic',
+          // 新静态化接口，复用动态路由，后端post动态路由的路径，使用则注意在动态路由加入 static 字段，不使用此静态化接口改为空字符串即可
+          static_dynamic_router: '/api/setStatic',
         })
       }
     }

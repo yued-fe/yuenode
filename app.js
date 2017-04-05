@@ -62,7 +62,6 @@ router.use('', renderRouter.routes());
  */
 if (!!siteConf.static_server_on) {
     const bodyParser = require('koa-bodyparser');
-    const staticRouter = require('./router/staticRouter.js');
 
     // 解析post请求body
     app.use(bodyParser({
@@ -76,9 +75,17 @@ if (!!siteConf.static_server_on) {
         }
     }));
 
-    // 启用静态化路由
-    const staticCgi = !!siteConf.static_server_cgi ? siteConf.static_server_cgi : '/api/v2/setData';
-    router.use(staticCgi, staticRouter.routes());
+    // 启用原有静态化路由
+    if (!!siteConf.static_server_cgi) {
+        const {staticRouter} = require('./router/staticRouter.js');
+        router.use(siteConf.static_server_cgi, staticRouter.routes());
+    }
+
+    // 启用静态化复用动态化路由
+    if (!!siteConf.static_dynamic_router) {
+        const {staticDynamicRouter} = require('./router/staticRouter.js');
+        router.use(siteConf.static_dynamic_router, staticDynamicRouter.routes());
+    }
 }
 
 // 启用路由
