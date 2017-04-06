@@ -116,7 +116,8 @@ function writeStaticFile(ctx, routeConf, viewPath, data) {
  * @param  configFn  配置函数
  */
 function setRouter(routerMap, router, configFn) {
-    for (let [route, routeConf] of Object.entries(routerMap)) {
+    for (let route of Object.keys(routerMap)) {
+        const routeConf = routerMap[route];
         // 如果动态路由配置了静态化，则启用静态化
         if (!!routeConf.static) {
             // 检查每个路由配置的文件夹是否存在

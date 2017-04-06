@@ -105,9 +105,9 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                     
                 // 如果没有配置error handler，则抛出错误统一处理
                 } catch (err) {
-                    let err = new Error(body.msg || '请求后端返回数据code不为0');
-                    err.status = 500;
-                    throw err;
+                    let newErr = new Error(body.msg || '请求后端返回数据code不为0');
+                    newErr.status = 500;
+                    throw newErr;
                 }
 
             // 如果后端返回code为0
@@ -167,8 +167,8 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
     this.body = html;
 };
 
-for (let [route, routeConf] of Object.entries(routerMap)) {
-    router.get(route, configRouter(routeConf));
+for (let route of Object.keys(routerMap)) {
+    router.get(route, configRouter(routerMap[route]));
 }
 
 module.exports = router;
