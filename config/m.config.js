@@ -11,6 +11,8 @@ module.exports = {
       name: 'm',
       script: 'app.js',
       node_args: '--harmony',
+      instances : 0,
+      exec_mode : 'cluster',
       // 以下是日志输出选项
       log_file: 'log/m.qidian.com/combined.log',
       out_file: 'log/m.qidian.com/out.log',
@@ -21,7 +23,7 @@ module.exports = {
       env: {
         NODE_SITE: 'm', // NODE服务项目别名
         NODE_ENV: NODE_ENV, // 当前Node服务环境
-        port: 10500, // 服务端口
+        port: 10011, // 服务端口
         CONFIG_FILE: 'off', // 设置为 on 时,兼容旧有配置文件形式
         // 站点配置
         config: JSON.stringify({

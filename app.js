@@ -1,5 +1,6 @@
 'use strict';
 
+global.Promise = require('bluebird');
 const app = require('koa')();
 const chalk = require('chalk');
 const router = require('koa-router')();

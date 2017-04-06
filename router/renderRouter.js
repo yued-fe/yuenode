@@ -154,9 +154,6 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
     // 渲染页面
     let html = this.render(currentConf.views, body);
 
-    // 压缩 html
-    html = utils.compressHTML(html);
-
     // 如果在设置中开启简繁体转换功能，则根据 cookie 中的简繁体设置，转换相应渲染内容
     if (!!siteConf.character_conversion) {
         const Chinese = require('chinese-s2t');
