@@ -121,7 +121,7 @@ module.exports = {
 };
 ```
 
-## 可以在模板直接使用的全局变量 yuenode
+## 可以在模板直接使用的全局变量：yuenode
 
 ```js
 // yuenode
@@ -235,5 +235,5 @@ module.exports = {
 
 ## 原有项目迁移
 
-1. 要将配置文件修改为现有形式，具体可关注 [配置文件](#配置文件) 一节
-2. 以往模板渲染的一些变量如 pageUpdateTime, CLIENT_URL, cookie等现在已经整合到全局变量 yuenode 中，具体可关注 [可以在模板直接使用的全局变量 yuenode](#可以在模板直接使用的全局变量 yuenode) 一节
+1. 要将配置文件修改为现有形式，具体可关注 *配置文件* 一节
+2. 以往模板渲染的一些变量如 pageUpdateTime, CLIENT_URL, cookie等现在已经整合到全局变量 yuenode 中，具体可关注 *可以在模板直接使用的全局变量：yuenode* 一节
