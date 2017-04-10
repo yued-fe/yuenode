@@ -7,7 +7,7 @@ const router = require('koa-router')();
 const dateformat = require('dateformat');
 
 const logger = require('./middleware/logger.js');
-const onerror = require('./middleware/HandleError.js');
+const onerror = require('./middleware/errorHandler.js');
 const favicon = require('./middleware/favicon.js');
 const addStateInfo = require('./middleware/addStateInfo.js');
 const ejsRender = require('./middleware/addEjsRender.js');

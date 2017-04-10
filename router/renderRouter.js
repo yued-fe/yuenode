@@ -81,6 +81,8 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                     monitor.report(m_options, 2, spendTime);
                 }
 
+                console.log(chalk.red('后端返回code为：'), body.code);
+
                 try {
                     // 如果开启了非0自定义handler，则执行
                     if (!!siteConf.custom_handle_on) {
@@ -101,11 +103,13 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                     // 在站点配置中开启强制渲染则跳过报错继续渲染
                     if (!siteConf.force_render) {
                         throw new Error('没有开启非0自定义handler');
+                    } else {
+                        console.log(chalk.blue('开启强制渲染'));
                     }
                     
                 // 如果没有配置error handler，则抛出错误统一处理
                 } catch (err) {
-                    let newErr = new Error(body.msg || '请求后端返回数据code不为0');
+                    let newErr = new Error(body.msg || '后端 msg 为空');
                     newErr.status = 500;
                     throw newErr;
                 }
@@ -118,9 +122,9 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                     monitor.report(m_options, 1, spendTime);
                 }
 
-                // 设置注入逻辑,注入后台的 set-cookie 字段
-                if (result.headers && result.headers['set-cookie']) {
-                    this.set('set-cookie', result.headers['set-cookie']);
+                // 设置注入逻辑,透传后台的header
+                if (result.headers) {
+                    this.set(result.headers);
                 }
             }
 
@@ -132,14 +136,16 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                 monitor.report(m_options, 2, spendTime);
             }
 
-            // 如果后端返回301、302，将跳转地址返回客户端
+            // 如果后端返回301、302，跳转
             if (result.statusCode === 301 || result.statusCode === 302) {
                 this.redirect(result.headers.location);
                 return 0;
             }
 
-            let err = new Error(result.body);
+            // 其余状态码直接返回客户端
+            let err = new Error(`后端返回非200/301/302，result.body：${result.body}。`);
             err.status = result.statusCode;
+            err.stack = null;
             throw err;
         }
 

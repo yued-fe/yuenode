@@ -50,6 +50,14 @@ function dev(opts) {
 
     try {
       yield next;
+
+      // 404
+      if (this.status === 404) {
+        let err = new Error('Not Found');
+        err.status = 404;
+        err.stack = `"${this.path}": Not Found`;
+        throw err;
+      }
     } catch (err) {
       // log uncaught downstream errors
       log(this, start, null, err);
