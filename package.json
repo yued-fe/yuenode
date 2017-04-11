@@ -4,7 +4,9 @@
   "author": "shilei",
   "description": "A Nodejs framework for Yuewen Group's project",
   "main": "app.js",
-  "engines": {"node": "6.x"},
+  "engines": {
+    "node": "6.x"
+  },
   "scripts": {
     "dev:m": "cross-env file=config/m.config.js gulp",
     "start:m": "pm2 start config/m.config.js",
@@ -31,6 +33,7 @@
     "url": "^0.11.0"
   },
   "devDependencies": {
+    "cross-env": "^4.0.0",
     "figlet": "^1.2.0",
     "gulp": "^3.9.1",
     "gulp-nodemon": "^2.2.1"
