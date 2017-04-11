@@ -10,6 +10,8 @@ module.exports = {
       name: 'm',
       script: 'app.js',
       node_args: '--harmony',
+      instances : 0,
+      exec_mode : 'cluster',
       // 以下是日志输出选项
       log_file: 'log/m.qidian.com/combined.log',
       out_file: 'log/m.qidian.com/out.log',
