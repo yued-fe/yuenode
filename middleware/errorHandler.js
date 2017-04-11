@@ -59,14 +59,14 @@ module.exports = function onerror(app, options) {
             this.redirect(options.redirect);
         } else {
             // 渲染错误数据
-            let body = Object.assign({}, this.state, {
+            let body = {
                 code: this.status,
                 envType: NODE_ENV,
                 staticConf: serverConf.static,
                 defaultSearch: { 'keywords': '' }, //兼容用
                 msg: err.message,
                 stack: err.stack
-            });
+            };
 
             try {
                 // 渲染项目模板中的error.html

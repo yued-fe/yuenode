@@ -154,9 +154,6 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
         console.log(chalk.blue('没有配置cgi，不发送后端请求。'));
     }
 
-    // 传入 state 里的数据用于渲染
-    body = Object.assign({}, this.state, body);
-
     // 渲染页面
     let html = this.render(currentConf.views, body);
 

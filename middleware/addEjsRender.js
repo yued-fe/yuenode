@@ -77,12 +77,12 @@ module.exports = function (app, settings) {
     }
 
     app.context.render = function (view, _context) {
-        // 将 setting 和 render 传入的内容合并，供模板渲染使用
+        // 将 setting 和 state、 render 传入的内容合并，供模板渲染使用
         let context = Object.assign({
             cache: settings.cache,
             debug: settings.debug,
             delimiter: settings.delimiter
-        }, _context);
+        }, this.state, _context);
 
         let html = render(view, context);
 

@@ -158,11 +158,8 @@ if (!!siteConf.static_server_cgi) {
     const configRouter = (routeConf, viewPath) => function staticRoutersHandler() {
         console.log(chalk.blue('匹配到当前静态路由配置：\n'), routeConf);
 
-        // 传入请求数据、state数据用于渲染
-        let body = Object.assign({}, this.state, this.request.body);
-
         // 生成静态页面
-        writeStaticFile(this, routeConf, viewPath, body);
+        writeStaticFile(this, routeConf, viewPath, this.request.body);
     };
 
     // 设置路由
@@ -231,9 +228,6 @@ if (!!siteConf.static_dynamic_router) {
         } else {
             console.log(chalk.blue('没有配置cgi，不发送后端请求。'));
         }
-
-        // 传入 state 里的数据用于渲染
-        body = Object.assign({}, this.state, body);
 
         // 生成静态页面
         writeStaticFile(this, routeConf, viewPath, body);
