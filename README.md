@@ -155,7 +155,7 @@ module.exports = {
   query: { a: '1' },
   pathname: '/fans',
   path: '/fans?a=1',
-  href: 'http://localm.qidian.com:10500/fans?a=1' }
+  href: 'http://localm.qidian.com:10500/fans?a=1'
 }
 ```
 
