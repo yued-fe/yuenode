@@ -4,6 +4,14 @@
   "author": "shilei",
   "description": "A Nodejs framework for Yuewen Group's project",
   "main": "app.js",
+  "engines": {"node": "6.x"},
+  "scripts": {
+    "dev:m": "cross-env file=config/m.config.js gulp",
+    "start:m": "pm2 start config/m.config.js",
+    "reload:m": "pm2 reload m",
+    "stop:m": "pm2 stop m",
+    "delete:m": "pm2 delete m"
+  },
   "dependencies": {
     "bluebird": "^3.5.0",
     "bytes": "^2.4.0",

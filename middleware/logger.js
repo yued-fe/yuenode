@@ -41,7 +41,7 @@ function dev(opts) {
     // request
     const start = Date.now();
     console.log(
-      chalk.magenta.bold(' --> ') + 
+      chalk.magenta.bold('\n --> ') + 
       chalk.bold(' %s') + 
       chalk.gray(' %s'),
 
@@ -126,12 +126,13 @@ function log(ctx, start, len, err, event) {
     chalk.gray(' %s') +
     chalk[color](' %s') +
     chalk.gray(' %s') +
-    chalk.gray(' %s \n'),
+    chalk.gray(' %s'),
 
     ctx.originalUrl,
     status,
     time(start),
-    length);
+    length
+  );
 }
 
 /**

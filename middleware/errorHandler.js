@@ -42,17 +42,8 @@ module.exports = function onerror(app, options) {
             err = newError;
         }
 
-        const headerSent = this.headerSent || !this.writable;
-        if (headerSent) err.headerSent = true;
-
-        // delegate
-        this.app.emit('error', err, this);
-
-        // nothing we can do here other
-        // than delegate to the app-level
-        // handler and log.
-        if (headerSent) return;
-
+        console.log(chalk.red('errorHandle:'), err.message);
+        
         // ENOENT support
         if (err.code === 'ENOENT') {
             err.status = 404;
@@ -100,6 +91,7 @@ module.exports = function onerror(app, options) {
                 }
             }
         }
+
         this.res.end(this.body);
     };
 };

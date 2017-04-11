@@ -77,8 +77,6 @@ module.exports = () => function* addStateInfo(next) {
         CLIENT_COOKIE: userCookie,
         CLIENT_UA: JSON.stringify(userUA, null, 4),
         LOCATION: userUrlParse,
-        COOKIEOBJ: cookieObj,
-        QUERYOBJ: userUrlParse.query,
 
         // 静态文件配置
         pageUpdateTime: dateFormat((new Date()).getTime(), "yyyy-mm-dd,HH:MM:ss"),

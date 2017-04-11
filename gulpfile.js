@@ -2,8 +2,9 @@ const gulp = require('gulp');
 const nodemon = require('gulp-nodemon');
 const figlet = require('figlet');
 const chalk = require('chalk');
+const path = require('path');
 
-const NODE_CONFIG = require('./config/m.config.js');
+const NODE_CONFIG = require(path.join(process.cwd(), process.env.file));
 
 gulp.task('nodemon', function() {
 

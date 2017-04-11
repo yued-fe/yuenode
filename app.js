@@ -105,7 +105,7 @@ app.listen(env.port, () => {
         chalk.green('Server NODE_ENV: '), chalk.blue(env.NODE_ENV), '\n',
         chalk.green('Server IP: '), chalk.bold(IP), '\n',
         chalk.green('Yuenode Server is listening on port: '), chalk.bold(env.port), '\n',
-        chalk.green('= = = = = = = = = = = = = = = = = = = = = ='), '\n'
+        chalk.green('= = = = = = = = = = = = = = = = = = = = = =')
     );
 });
 

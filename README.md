@@ -36,11 +36,16 @@ yuenode
 
 1. 执行 npm install
 2. 执行 sudo npm install gulp pm2 -g
-3. 配置 *.config.js 中的环境变量、功能开关，可以自己复制多份不同的配置文件，每次根据文件启动不同的服务
-4. 线上用 pm2 启动，本地调试用 gulp 启动，如果第2步文件名有修改则需要在 gulpfile.js 中更改入口文件
-  pm2: 执行 pm2 start config/*.config.js，可以 start 任意份配置，端口号不同即可
-  gulp: 执行 gulp
+3. 配置 config/*.config.js 中的环境变量、功能开关，可以自己复制多份不同的配置文件，每次根据文件启动不同的服务
+4. 线上用 pm2 启动，本地调试用 gulp 启动，如果增加配置需要在 npm scripts 中配置好，需要注意站点配置文件 name、NODE_SITE 以及 npm script 中的命令站点名需要一致。
+  以 m 站为例：
+  执行 'npm run dev:m' 为 gulp 开启 m 站本地调试
+  执行 'npm run start:m' 为 pm2 开启 m 站运行启动
+  执行 'npm run reload:m' 为 pm2 重载 m 站
+  执行 'npm run stop:m' 为 pm2 停止 m 站
+  执行 'npm run delete:m' 为 pm2 删除 m 站进程
 5. 注意 NODE_ENV 变量，需要启动时输入或者手动修改配置文件
+6. 运行环境需要 node 版本 >= 6
 
 ## 配置文件
 ```js
@@ -107,7 +112,7 @@ module.exports = {
           static_server_on: true,
           // 静态化路由配合文件,默认为 static_routermap
           static_routermap_file: 'static_routermap',
-          // 是否开启 html 压缩
+          // 是否开启静态化 html 压缩
           compressHTML: true,
           // 静态化服务原有后端接口，后端post所有页面数据，不使用此静态化接口改为空字符串即可
           static_server_cgi: '/api/v2/setData',
@@ -237,7 +242,7 @@ module.exports = function (ctx, body, requestUrl) {
       break;
     case 1006:
       body.defaultSearch = {};
-      body.msg = body.msg + "\n" + body.exception;
+      body.msg = body.msg + '\n' + body.exception;
       ctx.status = 302;
       ctx.redirct('/error');
       break;
@@ -259,14 +264,15 @@ module.exports = {
 
 ### 模板渲染
 
-因为有些项目有多域名的情况，所以首先会将动态路由变为 path:host:config 的形式，可以支持多域名的情况。收到客户端请求后根据 path 去寻找相应的域名下的路由配置，取得 views 模板，向后端发送 cgi 取得数据，cgi 返回不为200/301/302，则发生错误。返回 200 但 code 不为 0，有非 0 自定义 handler 则执行，没有则发生错误。在此过程中如果开启了 taf 上报，则会进行上报。
+因为有些项目有多域名的情况，所以首先会将动态路由变为 path.host.config 的形式，可以支持多域名的情况。收到客户端请求后根据 path 去寻找相应的域名下的路由配置，取得 views 模板，向后端发送 cgi 取得数据，cgi 返回不为200/301/302，则发生错误。返回 200 但 code 不为 0，有非 0 自定义 handler 则执行，没有则发生错误。在此过程中如果开启了 taf 上报，则会进行上报。
 向后端发送 cgi 请求前如果开启 L5 且正确配置，会从 L5 取得相应后端 ip，否则采用项目配置文件中的 cgi.ip。cgi.domain 为后端请求 headers 中的 host 字段，配置错误有可能造成后端拒绝请求。如果后端采用 https 协议，请在框架机中开启。
 发生错误时，如果在框架机中开启了重定向，则会重定向到相应路径，否则会渲染 error 页面。error 页面寻找顺序为 模板文件根目录中对应域名文件夹下 error 页面 => 无则模板文件根目录 error 页面 => 无则框架机自带 error 页面。
+如果开启了 inline-ejs 功能，则会在模板渲染时跳过 inline-ejs 标签中的相关模板，返回客户端供客户端使用；如果开启了简繁体转换，则会根据 cookie 中的 lang 字段判断简繁体，如果 lang 为 zht，则会将内容转换为繁体输出到客户端。
 
 ### 静态化服务
 
 静态化一律由后端 post 请求进行发起，旧有接口需要将页面所需 data 全部 post 过来，新接口则可以复用模板渲染的路由，可以直接 post 请求模板渲染的路由 path，只要在模板渲染的路由中配置好相应的 static 字段即可。
-收到后端请求后，取得对应 path 的路由配置，取得 views 模板，从请求 body 中（新接口则向后端发送请求）获得数据，渲染完成后保存在 static 配置的文件路径中。
+收到后端请求后，取得对应 path 的路由配置，取得 views 模板，从请求 body 中（新接口则向后端发送请求）获得数据，渲染完成后保存在 static 配置的文件路径中，如开启压缩则压缩。
 如果生成静态文件成功，后端则后收到 statusCode 为 200、body.code 为 0 的回应。否则 body.msg 为相应的原因。 
 
 ## 原有项目迁移
