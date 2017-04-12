@@ -7,7 +7,7 @@ module.exports = {
   apps: [
     {
       // 服务别名
-      name: 'oversea',
+      name: 'oversea-oa2',
       script: 'app.js',
       node_args: '--harmony',
       instances: 0,
