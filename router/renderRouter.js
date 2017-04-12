@@ -160,7 +160,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
     // 如果在设置中开启简繁体转换功能，则根据 cookie 中的简繁体设置，转换相应渲染内容
     if (!!siteConf.character_conversion) {
         const Chinese = require('chinese-s2t');
-        let isZht = body.Zht === false ? false : this.state.yuenode.isZht;
+        let isZht = body.Zht === false ? false : this.state.YUE.isZht;
         if (isZht) {
             html = Chinese.s2t(html);
         }

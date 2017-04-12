@@ -15,8 +15,8 @@ const serverConf = getConfigs.getServerConf();
 const extendsLoader = getConfigs.getExtendsLoader();
 
 module.exports = () => function* addStateInfo(next) {
-    // 全局命名空间 yuenode
-    this.state.yuenode = {};
+    // 全局命名空间 YUE
+    this.state.YUE = {};
     const userHeader = this.request.header;
     const userCookie = !!userHeader.cookie ? userHeader.cookie : '';
     const cookieObj = cookies.parse(userCookie);
@@ -30,7 +30,7 @@ module.exports = () => function* addStateInfo(next) {
             isZht = (cookieObj.lang && cookieObj.lang === 'zht') ? true : false;
         }
 
-        this.state.yuenode = Object.assign(this.state.yuenode, {
+        this.state.YUE = Object.assign(this.state.YUE, {
             isZht: isZht
         });
     }
@@ -40,7 +40,7 @@ module.exports = () => function* addStateInfo(next) {
     const userUrlParse = url.parse(userClientUrl, true, true);
 
     // 将业务中较常使用到的 COOKIE,UA,URL 等信息作为通用信息抛给前端业务方使用
-    this.state.yuenode = Object.assign(this.state.yuenode, {
+    this.state.YUE = Object.assign(this.state.YUE, {
         ua: userUA,
         location: userUrlParse,
         cookie: cookieObj,
@@ -53,7 +53,7 @@ module.exports = () => function* addStateInfo(next) {
 
     // 如果项目中有自定义扩展，则将扩展方法注入 state
     if (!!extendsLoader) {
-        this.state.yuenode = Object.assign(this.state.yuenode, extendsLoader);
+        this.state.YUE = Object.assign(this.state.YUE, extendsLoader);
     }
 
     // 如果在站点设置中开启简繁体转换功能，则通过请求cookie中的 lang 字段判断简繁体

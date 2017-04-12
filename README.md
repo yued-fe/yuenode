@@ -127,10 +127,10 @@ module.exports = {
 };
 ```
 
-## 可以在模板直接使用的全局变量：yuenode
+## 可以在模板直接使用的全局变量：YUE
 
 ```js
-// yuenode
+// YUE
 {
   ua              // [String] user-agent
   location        // [Object] location obj
@@ -142,7 +142,7 @@ module.exports = {
                   // extends（如果开启）
 }
 
-// yuenode.location
+// YUE.location
 {
   protocol: 'http:',
   slashes: true,
@@ -174,18 +174,12 @@ module.exports.genConf = {
     },
     // 静态化文件生成根目录
     index: '/data/website/static',
-    // 传入模板渲染的参数，比如静态文件路径，可以任意设置，在模板中通过 yuenode.staticConf 取得
+    // 传入模板渲染的参数，比如静态文件路径，可以任意设置，在模板中通过 YUE.staticConf 取得
     static: {
       domains: {
         m: 'oam.qidian.com',
         apps: 'oaapps.qidian.com',
-        static: 'oaqidian.gtimg.com',
-        cover: 'qidian.qpic.cn',
-        pay: 'oapay.yuewen.com', // 充值域名
-        security: 'aq.yuewen.com', // 安全中心域名
-        pc: 'oawww.qidian.com', // PC站点域名
-        hiijack: 'oabook.qidian.com', // 反劫持上报域名
-        activity: 'oaactivity.qidian.com', // 活动域名
+        static: 'oaqidian.gtimg.com'
       }
     },
     // 后端请求接口配置，如后端ip，l5
@@ -253,7 +247,7 @@ module.exports = function (ctx, body, requestUrl) {
 
 /**
  * 自定义扩展
- * 可以将一些自定义方法注入到框架机中通过 yuenode.{方法名} 直接调用
+ * 可以将一些自定义方法注入到框架机中通过 YUE.{方法名} 直接调用
  */
 module.exports = {
   getBookUrl: function(bookId) {
@@ -280,4 +274,4 @@ module.exports = {
 ## 原有项目迁移
 
 1. 要将配置文件修改为现有形式，具体可关注 **配置文件** 一节
-2. 以往模板渲染的一些变量如 pageUpdateTime, CLIENT_URL, cookie等现在已经整合到全局变量 yuenode 中，具体可关注 **可以在模板直接使用的全局变量：yuenode** 一节
+2. 以往模板渲染的一些变量如 pageUpdateTime, CLIENT_URL, cookie等现在已经整合到全局变量 YUE 中，具体可关注 **可以在模板直接使用的全局变量：YUE** 一节
