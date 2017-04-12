@@ -40,11 +40,11 @@ yuenode
 4. 本地调试用 gulp 启动，线上用 pm2 启动，如果增加配置需要在 npm scripts 中配置好，需要注意站点配置文件 name、NODE_SITE 以及 npm script 中的命令站点名需要一致。
 
 > 以 m 站为例：
-    执行 'npm run dev:m' 为 gulp 开启 m 站本地调试
-    执行 'npm run start:m' 为 pm2 开启 m 站线上运行启动
-    执行 'npm run reload:m' 为 pm2 重载 m 站
-    执行 'npm run stop:m' 为 pm2 停止 m 站
-    执行 'npm run delete:m' 为 pm2 删除 m 站进程
+      执行 'npm run dev:m' 为 gulp 开启 m 站本地调试
+      执行 'npm run start:m' 为 pm2 开启 m 站线上运行启动
+      执行 'npm run reload:m' 为 pm2 重载 m 站
+      执行 'npm run stop:m' 为 pm2 停止 m 站
+      执行 'npm run delete:m' 为 pm2 删除 m 站进程
 
 5. 注意 NODE_ENV 变量，需要启动时输入或者手动修改配置文件
 6. 运行环境需要 node 版本 >= 6
