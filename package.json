@@ -8,11 +8,11 @@
     "node": ">=7.0"
   },
   "scripts": {
-    "dev:m": "cross-env file=config/m.config.js gulp",
-    "start:m": "pm2 start config/m.config.js",
-    "reload:m": "pm2 reload m",
-    "stop:m": "pm2 stop m",
-    "delete:m": "pm2 delete m"
+    "dev:oversea": "cross-env file=config/oversea.config.js gulp",
+    "start:oversea": "pm2 start config/oversea.config.js",
+    "reload:oversea": "pm2 reload oversea",
+    "stop:oversea": "pm2 stop oversea",
+    "delete:oversea": "pm2 delete oversea"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
