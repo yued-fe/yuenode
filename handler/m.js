@@ -1,18 +1,16 @@
 /**
- * 默认handler处理
- * 对于非0业务code,做单独处理
- * 后端cgi 请求的handler,针对site的非0业务code,做轻量的业务处理
+ * QidianMobileDynamicNodeServer
+ * 后端cgi 请求的handler,针对每个site,做轻量的业务处理
  */
 
 'use strict';
-const serverDetective = require('../lib/serverDetective');
 
-var handler = function*(router, body, requestUrl) {
-    var statusCode = parseInt(body.code);
-    console.log('默认handler');
-    console.log("statusCode:" + statusCode);
-    var _ClientURL = router.request.header.host + router.request.url;
-    switch (statusCode) {
+const handler = function (router, body, requestUrl) {
+    const _statusCode = parseInt(body.code);
+    console.log("handler qd");
+    console.log("statusCode:" + _statusCode);
+    const _ClientURL = router.request.header.host + router.request.url;
+    switch (_statusCode) {
         case 1:
             body.defaultSearch = {};
             body.msg = body.msg + "\n" + body.exception;
@@ -26,7 +24,7 @@ var handler = function*(router, body, requestUrl) {
             router.status = 404;
             console.error('[LOG URL]' + _ClientURL);
             console.error('[LOG Cgi]' + requestUrl);
-            yield router.render('error', body);
+            router.render('error', body);
             break;
     }
 }
