@@ -122,9 +122,9 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                     monitor.report(m_options, 1, spendTime);
                 }
 
-                // 设置注入逻辑,透传后台的header
-                if (result.headers) {
-                    this.set(result.headers);
+                // 设置注入逻辑,透传后台的header setcookie
+                if (result.headers && result.headers['set-cookie']) {
+                    this.set('set-cookie', result.headers['set-cookie']);
                 }
             }
 
