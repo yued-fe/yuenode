@@ -1,4 +1,3 @@
-const NODE_ENV = process.env.NODE_ENV || 'oa2';
 
 module.exports = {
   /**
@@ -13,16 +12,16 @@ module.exports = {
       instances: 0,
       exec_mode: 'cluster',
       // 以下是日志输出选项
-      log_file: '/data/logs/oa2www.webnovel.com/combined.log',
-      out_file: '/data/logs/oa2www.webnovel.com/out.log',
-      error_file: '/data/logs/oa2www.webnovel.com/err.log',
+      log_file: '/data/logs/oawww.webnovel.com/combined.log',
+      out_file: '/data/logs/oawww.webnovel.com/out.log',
+      error_file: '/data/logs/oawww.webnovel.com/err.log',
       merge_logs: true,
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
       // 以下是站点配置
       env: {
         NODE_SITE: 'oversea', // NODE服务项目别名
-        NODE_ENV: NODE_ENV, // 当前Node服务环境
-        port: 10501, // 服务端口
+        NODE_ENV: 'oa', // 当前Node服务环境
+        port: 10500, // 服务端口
         CONFIG_FILE: 'off', // 设置为 on 时,兼容旧有配置文件形式
         // 站点配置
         config: JSON.stringify({
