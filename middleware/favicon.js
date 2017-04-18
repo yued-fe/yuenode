@@ -8,7 +8,9 @@ const fs = require('fs');
 const path = require('path');
 
 const serverConf = require('../lib/getConfigs.js').getServerConf();
-const iconPath = path.join(serverConf.views.path, '/favicon.ico');
+const rootPath = typeof serverConf.views === 'string' ? serverConf.views : serverConf.views.path;
+const iconPath = path.join(rootPath, '/favicon.ico');
+
 
 module.exports = () => function* favicon(next) {
     if ('/favicon.ico' !== this.path) {
