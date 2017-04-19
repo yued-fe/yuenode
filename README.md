@@ -12,7 +12,7 @@ yuenode
     |
     |-+ lib
     |
-    |-+ log             // 默认日志文件输出目录
+    |-+ logs             // 默认日志文件输出目录
     |
     |-+ middleware
     |
