@@ -96,10 +96,6 @@ module.exports = {
           custom_handle_on: true,
           // 非0自定义handler文件路径
           custom_handle_file: '',
-          // 是否开启错误重定向，开启则如果发生错误定向到统一错误路径，关闭会渲染模板目录下的error.html
-          error_redirct: false,
-          // 如果开启错误重定向，则定向到此路径
-          error_redirct_path: '',
 
           // 动态路由映射文件或文件夹名,默认为 routermap，如果是文件夹默认加载文件夹内的index
           routermap_file: 'routes', 
@@ -264,8 +260,47 @@ module.exports = {
 
 因为有些项目有多域名的情况，所以首先会将动态路由变为 path.host.config 的形式，可以支持多域名的情况。收到客户端请求后根据 path 去寻找相应的域名下的路由配置，取得 views 模板，向后端发送 cgi 取得数据，cgi 返回不为200/301/302，则发生错误。返回 200 但 code 不为 0，有非 0 自定义 handler 则执行，没有则发生错误。在此过程中如果开启了 taf 上报，则会进行上报。
 向后端发送 cgi 请求前如果开启 L5 且正确配置，会从 L5 取得相应后端 ip，否则采用项目配置文件中的 cgi.ip。cgi.domain 为后端请求 headers 中的 host 字段，配置错误有可能造成后端拒绝请求。如果后端采用 https 协议，请在框架机中开启。
-发生错误时，如果在框架机中开启了重定向，则会重定向到相应路径，否则会渲染 error 页面。error 页面寻找顺序为 模板文件根目录中对应域名文件夹下 error 页面 => 无则模板文件根目录 error 页面 => 无则框架机自带 error 页面。
 如果开启了 inline-ejs 功能，则会在模板渲染时跳过 inline-ejs 标签中的相关模板，返回客户端供客户端使用；如果开启了简繁体转换，则会根据 cookie 中的 lang 字段判断简繁体，如果 lang 为 zht，则会将内容转换为繁体输出到客户端。
+
+### 错误处理
+
+发生错误时，如果模板文件根目录中存在有 error/{状态码}.html（如 error 文件夹下 404.html），则渲染对应状态码的页面，否则会渲染普通 error 页面。
+寻找顺序为：模板文件根目录中对应域名文件夹下 error/{状态码}.html 页面 => 模板文件根目录 error/{状态码}.html 页面 => 模板文件根目录中对应域名文件夹下 error.html 页面 => 模板文件根目录 error.html 页面 => 框架机自带 error.html 页面。顺序寻找，找到即渲染。
+为兼容已有项目，请注意 error.html 页面与 error 文件夹为平级。以上为强约定，不需要配置。
+
+```js
+/**
+ * 完整顺序示例目录结构
+ */
+views
+    |
+    |-+ m.qidian.com
+    |    |
+    |    |-+ error
+    |    |    |
+    |    |    |- 404.html   // ① 模板文件根目录中对应域名文件夹下 error/{状态码}.html 页面
+    |    |
+    |    |- error.html      // ③ 模板文件根目录中对应域名文件夹下 error.html 页面
+    |
+    |-+ error
+    |    |
+    |    |- 404.html        // ② 模板文件根目录 error/{状态码}.html 页面
+    |
+    |- error.html           // ④ 模板文件根目录 error.html 页面
+
+                            // ⑤ 框架机自带 error 页
+
+/**
+ * error 页面渲染变量
+ */
+{
+  code                      // [String] statusCode
+  envType                   // [String] 当前环境
+  staticConf                // [Object] 静态配置
+  msg                       // [String] 错误信息
+  stack                     // [String] 框架机自身出错stack，例如渲染失败；后端返回信息没有stack，均在msg
+}
+```
 
 ### 静态化服务
 

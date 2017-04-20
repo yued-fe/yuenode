@@ -43,10 +43,6 @@ module.exports = {
           custom_handle_on: true,
           // 非0自定义handler文件路径
           custom_handle_file: '',
-          // 是否开启错误重定向，开启则如果发生错误定向到统一错误路径，关闭会渲染模板目录下的error.html
-          error_redirct: false,
-          // 如果开启错误重定向，则定向到此路径
-          error_redirct_path: '',
 
           // 动态路由映射文件或文件夹名,默认为 routermap，如果是文件夹默认加载文件夹内的index
           routermap_file: 'routes', 
