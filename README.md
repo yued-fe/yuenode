@@ -297,8 +297,8 @@ views
   code                      // [String] statusCode
   envType                   // [String] 当前环境
   staticConf                // [Object] 静态配置
-  msg                       // [String] 错误信息
-  stack                     // [String] 框架机自身出错stack，例如渲染失败；后端返回信息没有stack，均在msg
+  msg                       // [String] 错误描述信息
+  stack                     // [String] 错误堆栈信息
 }
 ```
 

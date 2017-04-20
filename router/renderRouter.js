@@ -109,9 +109,9 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                     
                 // 如果没有配置error handler，则抛出错误统一处理
                 } catch (err) {
-                    let newErr = new Error(JSON.stringify(result.body,null,4));
+                    let newErr = new Error(body.msg || '后端 msg 为空');
                     newErr.status = 500;
-                    newErr.stack = null;
+                    newErr.stack = body.trace || '后端 trace 为空';
                     throw newErr;
                 }
 
@@ -144,9 +144,9 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
             }
 
             // 其余状态码直接返回客户端
-            let err = new Error(JSON.stringify(result.body,null,4));
+            let err = new Error('服务返回' + result.statusCode);
             err.status = result.statusCode;
-            err.stack = null;
+            err.stack = JSON.stringify(result.body,null,4);
             throw err;
         }
 

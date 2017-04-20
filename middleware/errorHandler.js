@@ -61,7 +61,7 @@ module.exports = function onerror(app, options) {
             staticConf: serverConf.static,
             defaultSearch: { 'keywords': '' }, //兼容用
             msg: err.message,
-            stack: err.stack
+            stack: NODE_ENV ==='pro' ? 'Something went wrong.' : err.stack
         };
 
         // 渲染状态码错误页
