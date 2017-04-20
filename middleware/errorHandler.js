@@ -54,6 +54,7 @@ module.exports = function onerror(app, options) {
         }
         this.status = err.status;
 
+<<<<<<< HEAD
         // 如果配置了错误重定向，则重定向
         if (!!options.redirect) {
             this.redirect(options.redirect);
@@ -68,6 +69,36 @@ module.exports = function onerror(app, options) {
                 stack: err.stack
             };
 
+=======
+        // 渲染错误数据
+        let body = {
+            code: this.status,
+            envType: NODE_ENV,
+            staticConf: serverConf.static,
+            defaultSearch: { 'keywords': '' }, //兼容用
+            msg: err.message,
+            stack: NODE_ENV ==='pro' ? 'Something went wrong.' : err.stack
+        };
+
+        // 渲染状态码错误页
+        try {
+            const page = `error/${this.status}.html`;
+            try {
+                // 渲染项目模板中的状态码错误页
+                const host = utils.fixHost(this.host);
+                const errPath = path.join(serverConf.views.path, host, page);
+                fs.statSync(errPath);
+                this.body = this.render(path.join(host, page), body);
+            } catch (err) {
+                // 没有的话渲染项目views根目录中的状态码错误页
+                const errPath = path.join(serverConf.views.path, page);
+                fs.statSync(errPath);
+                this.body = this.render(page, body);
+            }
+
+        // 没有配置状态码错误页则渲染error.html
+        } catch (err) {
+>>>>>>> v2
             try {
                 // 渲染项目模板中的error.html
                 const host = utils.fixHost(this.host);

@@ -8,11 +8,12 @@
     "node": ">=7.0"
   },
   "scripts": {
-    "dev:oversea": "cross-env file=config/oversea.config.js gulp",
-    "start:oversea": "pm2 start config/oversea.config.js",
-    "reload:oversea": "pm2 reload oversea",
-    "stop:oversea": "pm2 stop oversea",
-    "delete:oversea": "pm2 delete oversea"
+    "test":"mocha",
+    "dev:m": "cross-env file=config/m.config.js gulp",
+    "start:m": "pm2 start config/m.config.js",
+    "reload:m": "pm2 reload m",
+    "stop:m": "pm2 stop m",
+    "delete:m": "pm2 delete m"
   },
   "dependencies": {
     "bluebird": "^3.5.0",
@@ -25,9 +26,9 @@
     "ejs": "^2.5.6",
     "html-minifier": "^3.4.2",
     "humanize-number": "0.0.2",
-    "koa": "^1.3.0",
-    "koa-bodyparser": "^2.5.0",
-    "koa-router": "^5.4.0",
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.1.1",
     "passthrough-counter": "^1.0.0",
     "thunkify": "^2.1.2",
     "url": "^0.11.0"
@@ -36,6 +37,8 @@
     "cross-env": "^4.0.0",
     "figlet": "^1.2.0",
     "gulp": "^3.9.1",
-    "gulp-nodemon": "^2.2.1"
+    "gulp-nodemon": "^2.2.1",
+    "mocha": "^3.1.0",
+    "should": "^11.1.0"
   }
 }

@@ -1,7 +1,6 @@
 # Node Modules (use `npm install` to generate these)
 node_modules
 
-
 # OS X Junk
 .DS_Store
 npm-debug.log
@@ -11,6 +10,4 @@ npm-debug.log
 *.bak
 .svn
 *.log
-
-
 

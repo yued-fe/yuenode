@@ -1,0 +1,11 @@
+sudo: false
+language: node_js
+node_js:
+  - 7
+  - 6
+  - stable
+branches:
+  only:
+    - master
+# uncomment this line if your project needs to run something other than `rake`:
+# script: bundle exec rspec spec

@@ -96,6 +96,7 @@ app.use(router.allowedMethods());
 // 开启服务监听
 const env = process.env;
 const IP = getConfigs.getIP();
+
 app.listen(env.port, () => {
 
     console.log(
@@ -108,4 +109,7 @@ app.listen(env.port, () => {
         chalk.green('= = = = = = = = = = = = = = = = = = = = = =\n')
     );
 });
+
+
+module.exports = app;
 
