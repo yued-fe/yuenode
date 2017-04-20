@@ -1,3 +1,5 @@
+[![dependencies Status](https://david-dm.org/yued-fe/yuenode/status.svg)](https://david-dm.org/yued-fe/yuenode) [![devDependencies Status](https://david-dm.org/yued-fe/yuenode/dev-status.svg)](https://david-dm.org/yued-fe/yuenode?type=dev)
+
 # 新版node框架机简介
 
 [TOC]
