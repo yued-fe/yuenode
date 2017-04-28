@@ -111,10 +111,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                 } catch (err) {
                     let newErr = new Error(body.msg || '后端 msg 为空');
                     newErr.status = 500;
-<<<<<<< HEAD
-=======
                     newErr.stack = body.trace || '后端 trace 为空';
->>>>>>> v2
                     throw newErr;
                 }
 
@@ -147,15 +144,9 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
             }
 
             // 其余状态码直接返回客户端
-<<<<<<< HEAD
-            let err = new Error(`后端返回非200/301/302，result.body：${result.body}。`);
-            err.status = result.statusCode;
-            err.stack = null;
-=======
             let err = new Error('服务返回' + result.statusCode);
             err.status = result.statusCode;
             err.stack = JSON.stringify(result.body,null,4);
->>>>>>> v2
             throw err;
         }
 
