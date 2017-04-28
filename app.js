@@ -19,15 +19,8 @@ const renderRouter = require('./router/renderRouter.js');
 // 请求记录中间件
 app.use(logger());
 
-/**
- * 错误处理中间件
- * 如果在站点配置中开启错误重定向，则发生错误定向到统一错误路径，否则会渲染模板目录下的error.html
- */
-let errOpt = {};
-if (!!siteConf.error_redirct && !!siteConf.error_redirct_path) {
-    errOpt = {redirect: siteConf.error_redirct_path};
-}
-onerror(app, errOpt);
+// 错误处理中间件
+onerror(app);
 
 // favicon
 app.use(favicon());

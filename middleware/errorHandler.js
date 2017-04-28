@@ -13,13 +13,7 @@ const getConfigs = require('../lib/getConfigs.js');
 const serverConf = getConfigs.getServerConf();
 const NODE_ENV = getConfigs.getEnv();
 
-// 默认不重定向
-const defaultOptions = {
-    redirect: null,
-};
-
-module.exports = function onerror(app, options) {
-    options = Object.assign({}, defaultOptions, options);
+module.exports = function onerror(app) {
 
     app.context.onerror = function(err) {
         // don't do anything if there is no error.
