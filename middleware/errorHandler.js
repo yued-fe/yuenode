@@ -54,22 +54,6 @@ module.exports = function onerror(app, options) {
         }
         this.status = err.status;
 
-<<<<<<< HEAD
-        // 如果配置了错误重定向，则重定向
-        if (!!options.redirect) {
-            this.redirect(options.redirect);
-        } else {
-            // 渲染错误数据
-            let body = {
-                code: this.status,
-                envType: NODE_ENV,
-                staticConf: serverConf.static,
-                defaultSearch: { 'keywords': '' }, //兼容用
-                msg: err.message,
-                stack: err.stack
-            };
-
-=======
         // 渲染错误数据
         let body = {
             code: this.status,
@@ -98,7 +82,6 @@ module.exports = function onerror(app, options) {
 
         // 没有配置状态码错误页则渲染error.html
         } catch (err) {
->>>>>>> v2
             try {
                 // 渲染项目模板中的error.html
                 const host = utils.fixHost(this.host);
