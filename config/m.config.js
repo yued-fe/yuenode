@@ -34,7 +34,7 @@ module.exports = {
           cgi_ssl_on: false,
 
           // 项目配置文件夹地址
-          path: '/Users/shilei/qidian-m/.cache/config',
+          path: '/Users/shilei/qidian-git/qidian-m/.cache/config',
           // 配置文件名,默认为 server.js
           server_conf_file: 'server',
           // extends文件或文件夹名，如果是文件夹默认加载文件夹内的index，没有index的话加载loader
