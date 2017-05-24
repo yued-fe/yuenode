@@ -33,7 +33,10 @@
     "thunkify": "^2.1.2",
     "url": "^0.11.0",
     "@tencent/cl5": "^1.0.10",
-    "@tencent/taf-monitor": "^1.0.5"
+    "@tencent/taf-monitor": "^1.0.5",
+    "taf-logs": "latest",
+    "taf-rpc": "latest",
+    "taf-stream": "latest"
   },
   "devDependencies": {
     "cross-env": "^4.0.0",
