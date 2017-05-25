@@ -321,9 +321,11 @@ views
 |--------|:---:|:---:|:---:|:---:|
 |起点m站|   dev2 |     |    |    |
 |起点海外版|  dev |  oa |    |    |
-|起点个人中心|  dev |  oa |    |    |
+|起点个人中心| dev | oa | pre | pro |
 |言吧pc|  dev |  oa |  pre  | pro |
 |言吧m站| dev |  oa  | pre  | pro |
+|红袖pc|  dev |  oa |  pre  | pro |
+|红袖m站| dev |  oa  | pre  | pro |
 
 
 
