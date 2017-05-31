@@ -25,8 +25,6 @@ module.exports = {
         CONFIG_FILE: 'off', // 设置为 on 时,兼容旧有配置文件形式
         // 站点配置
         config: JSON.stringify({
-          // 是否开启taf上报
-          stat: false,
           // 是否开启L5 taf平台适用
           l5_on: true, 
           // 后端是否采用https协议
