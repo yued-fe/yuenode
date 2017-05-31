@@ -36,7 +36,8 @@ module.exports = () => function* addStateInfo(next) {
     }
     
     const userUA = !!userHeader['user-agent'] ? userHeader['user-agent'] : 'NO USER-AGENT SET';
-    const userClientUrl = this.request.protocol + '://' + this.req.headers.host + this.request.url;
+    const clientHost = !!userHeader['X-host'] ? userHeader['X-host'] : this.req.headers.host;
+    const userClientUrl = this.request.protocol + '://' + clientHost + this.request.url;
     const userUrlParse = url.parse(userClientUrl, true, true);
 
     // 将业务中较常使用到的 COOKIE,UA,URL 等信息作为通用信息抛给前端业务方使用
