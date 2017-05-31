@@ -13,7 +13,6 @@ module.exports = {
       instances: 0,
       exec_mode: 'cluster',
       // 以下是日志输出选项
-      log_file: 'logs/qdp.qidian.com/combined.log',
       out_file: 'logs/qdp.qidian.com/out.log',
       error_file: 'logs/qdp.qidian.com/err.log',
       merge_logs: true,
