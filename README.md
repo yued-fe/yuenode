@@ -157,6 +157,8 @@ module.exports = {
 }
 ```
 
+如果请求 host 在 nginx 中做过变换（例如将 www.webnovel.com 转换成 en.qidian.com），可以在 nginx 转换时将客户端的真实 host 加入到请求 header 中的 X-host，这样 location 中所有 host 将为 X-host 中的 host。
+
 ## 以往约定格式
 
 ```js
