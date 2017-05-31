@@ -53,9 +53,9 @@ module.exports = function onerror(app) {
             code: this.status,
             envType: NODE_ENV,
             staticConf: serverConf.static,
-            defaultSearch: { 'keywords': '' }, //兼容用
+            defaultSearch: { 'keywords': '' }, // 兼容用
             msg: err.message,
-            stack: NODE_ENV ==='pro' ? 'Something went wrong.' : err.stack
+            stack: NODE_ENV === 'pro' ? 'Something went wrong.' : err.stack
         };
 
         // 渲染状态码错误页
