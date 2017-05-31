@@ -53,21 +53,6 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
         // 发送请求
         const {result, spendTime} = yield utils.requestCgi(cgiUrl, header);
 
-        // 如果站点配置中开启了taf上报，则执行
-        let monitor, m_options;
-        if (!!siteConf.stat) {
-            const Monitor = require('../lib/monitor');
-            monitor = new Monitor();
-
-            const ip_port = addr.split(':'); 
-            m_options = {
-                slaveIp: ip_port[0],
-                slaveName: process.env.NODE_SITE || NODE_ENV,
-                slavePort: ip_port[1] || 80,
-                interfaceName: currentConf.cgi,
-            };
-        }
-
         // 如果后台返回200
         if (result.statusCode === 200) {
 
@@ -75,11 +60,6 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
 
             // 如果后端返回code不为0，向外抛出
             if (body.code !== 0) {
-                // 如果开启taf上报，则上报
-                if (!!siteConf.stat) {
-                    m_options.returnValue = body.code;
-                    monitor.report(m_options, 2, spendTime);
-                }
 
                 console.log(chalk.red('后端返回code为：'), body.code);
 
@@ -117,11 +97,6 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
 
             // 如果后端返回code为0
             } else {
-                // 如果开启taf上报，则上报
-                if (!!siteConf.stat) {
-                    m_options.returnValue = body.code;
-                    monitor.report(m_options, 1, spendTime);
-                }
 
                 // 设置注入逻辑,透传后台的header setcookie
                 if (result.headers && result.headers['set-cookie']) {
@@ -131,11 +106,6 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
 
         // 如果后台没有返回200，向外抛出
         } else {
-            // 如果开启taf上报，则上报
-            if (!!siteConf.stat) {
-                m_options.returnValue = result.statusCode;
-                monitor.report(m_options, 2, spendTime);
-            }
 
             // 如果后端返回301、302，跳转
             if (result.statusCode === 301 || result.statusCode === 302) {

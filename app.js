@@ -19,7 +19,7 @@ const renderRouter = require('./router/renderRouter.js');
 // 请求记录中间件
 app.use(logger());
 
-// 错误处理中间件s
+// 错误处理中间件
 onerror(app);
 
 // favicon
