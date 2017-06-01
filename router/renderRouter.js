@@ -90,7 +90,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                 // 如果没有配置error handler，则抛出错误统一处理
                 } catch (err) {
                     let newErr = new Error(body.msg || '后端 msg 为空');
-                    newErr.status = 500;
+                    newErr.status = 400;
                     newErr.stack = body.trace || '后端 trace 为空';
                     throw newErr;
                 }
