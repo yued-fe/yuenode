@@ -73,7 +73,7 @@ function writeStaticFile(ctx, routeConf, viewPath, data) {
             code: 500,
             msg: err.message
         };
-        ctx.status = 500;
+        ctx.status = 200;
         return false;
     }
 
@@ -83,7 +83,7 @@ function writeStaticFile(ctx, routeConf, viewPath, data) {
             code: 500,
             msg: '模板可能渲染出错,或者没有内容'
         };
-        ctx.status = 500;
+        ctx.status = 200;
         return false;
     }
 
@@ -104,7 +104,7 @@ function writeStaticFile(ctx, routeConf, viewPath, data) {
             code: 500,
             msg: `生成静态文件 ${viewPath} 失败，请检查是否有写入权限。`
         };
-        ctx.status = 500;
+        ctx.status = 200;
         return false;
     }
 }
@@ -207,10 +207,10 @@ if (!!siteConf.static_dynamic_router) {
                 // 如果后端返回code不为0
                 if (body.code !== 0) {
                     this.body = {
-                        code: 500,
+                        code: result.statusCode,
                         msg: `请求后端返回数据code不为0, ${body.msg}`
                     };
-                    this.status = 500;
+                    this.status = 400;
                     return false;
                 } 
 
@@ -220,7 +220,7 @@ if (!!siteConf.static_dynamic_router) {
                     code: result.statusCode,
                     msg: `请求后端返回状态码 ${result.statusCode}, ${result.body}`
                 };
-                this.status = 500;
+                this.status = result.statusCode;
                 return false;
             }
 
