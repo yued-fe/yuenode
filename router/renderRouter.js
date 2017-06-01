@@ -37,7 +37,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
         currentConf = routeConf._;
     }
 
-    console.log(chalk.blue('匹配到当前路由配置：\n'), currentConf);
+    console.log(chalk.blue('匹配到当前路由配置：\n'), JSON.stringify(currentConf));
 
     let body = {};
 
