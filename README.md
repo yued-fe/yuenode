@@ -313,10 +313,23 @@ views
 ### 静态化服务
 
 静态化一律由后端 post 请求进行发起，旧有接口需要将页面所需 data 全部 post 过来，新接口则可以复用模板渲染的路由，可以直接 post 请求模板渲染的路由 path，只要在模板渲染的路由中配置好相应的 static 字段即可。
+
 收到后端请求后，取得对应 path 的路由配置，取得 views 模板，从请求 body 中（新接口则向后端发送请求）获得数据，渲染完成后保存在 static 配置的文件路径中，如开启压缩则压缩。
+
 如果生成静态文件成功，后端则后收到 statusCode 为 200、body.code 为 0 的回应。否则 body.msg 为相应的原因。 
+
+### 关于请求
+
+我们强烈建议客户端访问 host（包括涉及 nginx 转换的 host）、前端 routerMap 中的 host、后端接口 host（cgi.domain）以及其他可能涉及 host 的任何环节**能够将 host 保持一致**，这样的好处是不言而喻的。但假如实在有不可抗力导致 host 在某一环节产生了变换，框架机提供了以下方案进行容错（但不建议依赖这些方案）：
+
+1. 如果请求 host 在 nginx 中做过变换（例如将 www.webnovel.com 转换成 en.qidian.com），可以在 nginx 转换时将客户端的真实 host 加入到请求 header 中的 X-host，这样全局变量 YUE.location 中所有 host 将为 X-host 中的 host。
+2. 如果客户端 host 与后端请求 host 不一致，后端服务可以在 框架机请求 header 中的 X-host 与 X-url 中取到框架机接收到的相应 host（这一步已经包括对 nginx 中 X-host 的获取） 与 url。
 
 ## 原有项目迁移
 
 1. 要将配置文件修改为现有形式，具体可关注 **配置文件** 一节
 2. 以往模板渲染的一些变量如 pageUpdateTime, CLIENT_URL, cookie等现在已经整合到全局变量 YUE 中，具体可关注 **可以在模板直接使用的全局变量：YUE** 一节
+
+
+
+
