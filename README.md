@@ -157,8 +157,6 @@ module.exports = {
 }
 ```
 
-如果请求 host 在 nginx 中做过变换（例如将 www.webnovel.com 转换成 en.qidian.com），可以在 nginx 转换时将客户端的真实 host 加入到请求 header 中的 X-host，这样 location 中所有 host 将为 X-host 中的 host。
-
 ## 以往约定格式
 
 ```js
@@ -258,16 +256,24 @@ module.exports = {
 
 ## 工作流程
 
+![yuenode](http://oib8kvha0.bkt.clouddn.com/yuenode.jpg)
+
+这里有一个丑萌的图，相信大家看完了应该是不太理解，没关系我们还有文字描述：
+
 ### 模板渲染
 
 因为有些项目有多域名的情况，所以首先会将动态路由变为 path.host.config 的形式，可以支持多域名的情况。收到客户端请求后根据 path 去寻找相应的域名下的路由配置，取得 views 模板，向后端发送 cgi 取得数据，cgi 返回不为 200/301/302，则发生对应错误。返回 200 但 code 不为 0 则发生 400 错误，有非 0 自定义 handler 则执行。
+
 向后端发送 cgi 请求前如果开启 L5 且正确配置，会从 L5 取得相应后端 ip，否则采用项目配置文件中的 cgi.ip。cgi.domain 为后端请求 headers 中的 host 字段，配置错误有可能造成后端拒绝请求。如果后端采用 https 协议，请在框架机中开启。
+
 如果开启了 inline-ejs 功能，则会在模板渲染时跳过 inline-ejs 标签中的相关模板，返回客户端供客户端使用；如果开启了简繁体转换，则会根据 cookie 中的 lang 字段判断简繁体，如果 lang 为 zht，则会将内容转换为繁体输出到客户端；如果配置了 extends 则添加到模板渲染中。
 
 ### 错误处理
 
 发生错误时，如果模板文件根目录中存在有 error/{状态码}.html（如 error 文件夹下 404.html），则渲染对应状态码的页面，否则会渲染普通 error 页面。
+
 寻找顺序为：模板文件根目录中对应域名文件夹下 error/{状态码}.html 页面 => 模板文件根目录 error/{状态码}.html 页面 => 模板文件根目录中对应域名文件夹下 error.html 页面 => 模板文件根目录 error.html 页面 => 框架机自带 error.html 页面。顺序寻找，找到即渲染。
+
 为兼容已有项目，请注意 error.html 页面与 error 文件夹为平级。以上为强约定，不需要配置。
 
 ```js

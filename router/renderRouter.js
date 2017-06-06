@@ -48,7 +48,12 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
         const {cgiUrl, addr} = yield utils.fixCgi(currentConf.cgi, this.params, this.query);
 
         // 取得header，根据环境指定后端host,后台根据host来区分后端业务server
-        const header = Object.assign({}, this.headers, {host: serverConf.cgi.domain});
+        const header = Object.assign({}, this.headers, {
+            host: serverConf.cgi.domain,
+            // 添加 X-host 和 X-url 给后端使用，为客户端真实请求透传
+            'X-host': !!this.header['X-host'] ? this.header['X-host'] : this.host,
+            'X-url': this.url
+        });
 
         // 发送请求
         const {result, spendTime} = yield utils.requestCgi(cgiUrl, header);
