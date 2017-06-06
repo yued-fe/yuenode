@@ -17,7 +17,7 @@ const extendsLoader = getConfigs.getExtendsLoader();
 module.exports = () => function* addStateInfo(next) {
     // 全局命名空间 YUE
     this.state.YUE = {};
-    const userHeader = this.request.header;
+    const userHeader = this.header;
     const userCookie = !!userHeader.cookie ? userHeader.cookie : '';
     const cookieObj = cookies.parse(userCookie);
 
@@ -36,8 +36,8 @@ module.exports = () => function* addStateInfo(next) {
     }
     
     const userUA = !!userHeader['user-agent'] ? userHeader['user-agent'] : 'NO USER-AGENT SET';
-    const clientHost = !!userHeader['X-host'] ? userHeader['X-host'] : this.req.headers.host;
-    const userClientUrl = this.request.protocol + '://' + clientHost + this.request.url;
+    const clientHost = !!userHeader['X-host'] ? userHeader['X-host'] : this.host;
+    const userClientUrl = this.protocol + '://' + clientHost + this.url;
     const userUrlParse = url.parse(userClientUrl, true, true);
 
     // 将业务中较常使用到的 COOKIE,UA,URL 等信息作为通用信息抛给前端业务方使用
