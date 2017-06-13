@@ -163,7 +163,7 @@ if (!!siteConf.static_server_cgi) {
      * @param  {string} viewPath  要生成的文件路径
      */
     const configRouter = (routeConf, viewPath) => function staticRoutersHandler() {
-        console.log(chalk.blue('匹配到当前静态路由配置：\n'), routeConf);
+        console.log(chalk.blue('匹配到当前静态路由配置：\n'), JSON.stringify(routeConf));
 
         // 生成静态页面
         writeStaticFile(this, routeConf, viewPath, this.request.body);
@@ -187,7 +187,7 @@ if (!!siteConf.static_dynamic_router) {
      * @param  {string} viewPath  要生成的文件路径
      */
     const configRouter = (routeConf, viewPath) => function* staticRoutersHandler() {
-        console.log(chalk.blue('匹配到当前静态路由配置：\n'), routeConf);
+        console.log(chalk.blue('匹配到当前静态路由配置：\n'), JSON.stringify(routeConf));
 
         // 取得去除前缀和端口号的host
         const host = utils.fixHost(this.host);
