@@ -43,7 +43,7 @@ module.exports = function (app, settings) {
     }
 
     if (!settings || !settings.root) {
-        throw new Error(chalk.red('调用 ejsRender 没有传入必须参数 settings.root'));
+        throw new Error(chalk.red('Set ejsRender needs settings.root'));
     }
 
     settings.root = path.resolve(process.cwd(), settings.root);
@@ -69,7 +69,7 @@ module.exports = function (app, settings) {
         // 调用原生 ejs.renderFile 方法
         return ejs.renderFile(viewPath, options, (err, str) => {
             if (err) {
-                console.log(chalk.red('ejs 渲染出错 \n'), err.stack);
+                console.log(chalk.red('ejs render failed \n'), err.stack);
                 throw err;
             }
             return str;

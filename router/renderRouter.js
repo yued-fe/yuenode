@@ -37,7 +37,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
         currentConf = routeConf._;
     }
 
-    console.log(chalk.blue('匹配到当前路由配置：\n'), JSON.stringify(currentConf));
+    console.log(chalk.blue('Got current router config: \n'), JSON.stringify(currentConf));
 
     let body = {};
 
@@ -66,7 +66,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
             // 如果后端返回code不为0，向外抛出
             if (body.code !== 0) {
 
-                console.log(chalk.red('后端返回code为：'), body.code);
+                console.log(chalk.red('Backend response body.code is:'), body.code);
 
                 try {
                     // 如果开启了非0自定义handler，则执行
@@ -87,16 +87,16 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
 
                     // 在站点配置中开启强制渲染则跳过报错继续渲染
                     if (!siteConf.force_render) {
-                        throw new Error('没有开启非0自定义handler');
+                        throw new Error('No not 0 handler');
                     } else {
-                        console.log(chalk.blue('开启强制渲染'));
+                        console.log(chalk.blue('Do force render.'));
                     }
                     
                 // 如果没有配置error handler，则抛出错误统一处理
                 } catch (err) {
-                    let newErr = new Error(body.msg || '后端 msg 为空');
+                    let newErr = new Error(body.msg || "Backend msg is empty.");
                     newErr.status = 400;
-                    newErr.stack = body.trace || '后端 trace 为空';
+                    newErr.stack = body.trace || "Backend trace is empty.";
                     throw newErr;
                 }
 
@@ -119,7 +119,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
             }
 
             // 其余状态码直接返回客户端
-            let err = new Error('服务返回' + result.statusCode);
+            let err = new Error("Backend response status code is: " + result.statusCode);
             err.status = result.statusCode;
             err.stack = JSON.stringify(result.body,null,4);
             throw err;
@@ -127,7 +127,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
 
     // 没有配置cgi则不向后端发送数据
     } else {
-        console.log(chalk.blue('没有配置cgi，不发送后端请求。'));
+        console.log(chalk.blue('No cgi, do not send request.'));
     }
 
     // 渲染页面

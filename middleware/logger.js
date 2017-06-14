@@ -126,7 +126,7 @@ function log(ctx, start, len, err, event) {
     chalk.gray(' %s') +
     chalk[color](' %s') +
     chalk.gray(' %s') +
-    chalk.gray(' %s \n'),
+    chalk.gray(' %s \n '),
 
     ctx.originalUrl,
     status,

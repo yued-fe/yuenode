@@ -36,7 +36,7 @@ module.exports = function onerror(app) {
             err = newError;
         }
 
-        console.log(chalk.red('errorHandle:'),'"'+this.path+'"', err.message, '\n');
+        console.log(chalk.red('errorHandle:'),'"'+this.path+'"', err.message, '\n ');
         
         // ENOENT support
         if (err.code === 'ENOENT') {

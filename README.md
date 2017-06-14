@@ -337,10 +337,12 @@ views
 |起点pc   | dev1/dev3 | oa1/oa2/oa3 |    |    |
 |起点m站  | dev |  oa |    |    |
 |起点活动  | dev1/dev2/dev3 | oa1/oa2/oa3 |    |    |
-|起点boss |     |     |    |    |
+|起点boss |   dev  |  oa   |    |    |
 |起点海外版 |    |  oa |    |    |
 |起点海外m站|    |  oa |    |    |
 |起点个人中心| dev | oa | pre | pro |
+|小阅pc|  dev |  oa |   |  |
+|小阅m站| dev |  oa  |   |  |
 |言吧pc|  dev |  oa |  pre  | pro |
 |言吧m站| dev |  oa  | pre  | pro |
 |红袖pc|  dev |  oa |  pre  | pro |

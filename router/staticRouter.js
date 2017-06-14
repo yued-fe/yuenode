@@ -20,12 +20,11 @@ function checkDirectory(dirPath) {
         fs.statSync(dirPath);
     } catch (err) {
         fs.mkdirSync(dirPath);
-        console.log(chalk.cyan('静态化目录不存在，创建此文件目录:\n'), dirPath);
+        console.log(chalk.cyan('No dir %s, try create it.'), dirPath);
         try {
             fs.statSync(dirPath);
         } catch (err) {
-            console.log(chalk.red('创建静态化目录 %s 失败！请确认有写入权限。'), dirPath);
-            throw new Error(`创建静态化目录失败`);
+            throw new Error(`Create dir ${dirPath} failed, please check your system write permission.`);
         }
     }
 }
@@ -81,7 +80,7 @@ function writeStaticFile(ctx, routeConf, viewPath, data) {
     if (!html) {
         ctx.body = {
             code: 500,
-            msg: '模板可能渲染出错,或者没有内容'
+            msg: 'Render failed, or no content.'
         };
         ctx.status = 200;
         return false;
@@ -93,16 +92,16 @@ function writeStaticFile(ctx, routeConf, viewPath, data) {
     // 生成静态文件
     try {
         fs.writeFileSync(viewPath, html, 'utf8');
-        console.log(chalk.green('生成静态文件 %s 成功。'), viewPath);
+        console.log(chalk.green('Create %s success.'), viewPath);
         ctx.body = {
             code: 0,
-            msg: `生成静态文件 ${viewPath} 成功。`
+            msg: `Create ${viewPath} success.`
         };
     } catch (err) {
-        console.log(chalk.red('生成静态文件 %s 失败，请检查是否有写入权限。'), viewPath);
+        console.log(chalk.red('Create %s failed, please check your system write permission.'), viewPath);
         ctx.body = {
             code: 500,
-            msg: `生成静态文件 ${viewPath} 失败，请检查是否有写入权限。`
+            msg: `Create ${viewPath} failed, please check your system write permission.`
         };
         ctx.status = 200;
         return false;
@@ -163,7 +162,7 @@ if (!!siteConf.static_server_cgi) {
      * @param  {string} viewPath  要生成的文件路径
      */
     const configRouter = (routeConf, viewPath) => function staticRoutersHandler() {
-        console.log(chalk.blue('匹配到当前静态路由配置：\n'), JSON.stringify(routeConf));
+        console.log(chalk.blue('Got current static router config:\n'), JSON.stringify(routeConf));
 
         // 生成静态页面
         writeStaticFile(this, routeConf, viewPath, this.request.body);
@@ -187,7 +186,7 @@ if (!!siteConf.static_dynamic_router) {
      * @param  {string} viewPath  要生成的文件路径
      */
     const configRouter = (routeConf, viewPath) => function* staticRoutersHandler() {
-        console.log(chalk.blue('匹配到当前静态路由配置：\n'), JSON.stringify(routeConf));
+        console.log(chalk.blue('Got current static router config:\n'), JSON.stringify(routeConf));
 
         // 取得去除前缀和端口号的host
         const host = utils.fixHost(this.host);
@@ -215,7 +214,7 @@ if (!!siteConf.static_dynamic_router) {
                 if (body.code !== 0) {
                     this.body = {
                         code: result.statusCode,
-                        msg: `请求后端返回数据code不为0, ${body.msg}`
+                        msg: `Request ${cgiUrl} body.code is not 0, ${body.msg}`
                     };
                     this.status = 400;
                     return false;
@@ -225,7 +224,7 @@ if (!!siteConf.static_dynamic_router) {
             } else {
                 this.body = {
                     code: result.statusCode,
-                    msg: `请求后端返回状态码 ${result.statusCode}, ${result.body}`
+                    msg: `Request ${cgiUrl} status code is ${result.statusCode}, ${result.body}`
                 };
                 this.status = result.statusCode;
                 return false;
@@ -233,7 +232,7 @@ if (!!siteConf.static_dynamic_router) {
 
         // 没有配置cgi则不向后端发送数据
         } else {
-            console.log(chalk.blue('没有配置cgi，不发送后端请求。'));
+            console.log(chalk.blue('No cgi, do not send request.'));
         }
 
         // 生成静态页面
