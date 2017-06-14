@@ -69,7 +69,7 @@ module.exports = function (app, settings) {
         // 调用原生 ejs.renderFile 方法
         return ejs.renderFile(viewPath, options, (err, str) => {
             if (err) {
-                console.log(chalk.red('ejs render failed \n'), err.stack);
+                console.log(chalk.red('ejs render failed \n'), err.message);
                 throw err;
             }
             return str;
