@@ -36,7 +36,7 @@ module.exports = () => function* addStateInfo(next) {
     }
     
     const userUA = !!userHeader['user-agent'] ? userHeader['user-agent'] : 'NO USER-AGENT SET';
-    const clientHost = !!userHeader['X-host'] ? userHeader['X-host'] : this.host;
+    const clientHost = !!userHeader['x-host'] ? userHeader['x-host'] : this.host;
     const userClientUrl = this.protocol + '://' + clientHost + this.url;
     const userUrlParse = url.parse(userClientUrl, true, true);
 

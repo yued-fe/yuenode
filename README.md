@@ -322,8 +322,8 @@ views
 
 我们强烈建议客户端访问 host（包括涉及 nginx 转换的 host）、前端 routerMap 中的 host、后端接口 host（cgi.domain）以及其他可能涉及 host 的任何环节**能够将 host 保持一致**，这样的好处是不言而喻的。但假如实在有不可抗力导致 host 在某一环节产生了变换，框架机提供了以下方案进行容错（但不建议依赖这些方案）：
 
-1. 如果请求 host 在 nginx 中做过变换（例如将 www.webnovel.com 转换成 en.qidian.com），可以在 nginx 转换时将客户端的真实 host 加入到请求 header 中的 X-host，这样全局变量 YUE.location 中所有 host 将为 X-host 中的 host。
-2. 如果客户端 host 与后端请求 host 不一致，后端服务可以在 框架机请求 header 中的 X-host 与 X-url 中取到框架机接收到的相应 host（这一步已经包括对 nginx 中 X-host 的获取） 与 url。
+1. 如果请求 host 在 nginx 中做过变换（例如将 www.webnovel.com 转换成 en.qidian.com），可以在 nginx 转换时将客户端的真实 host 加入到请求 header 中的 x-host，这样全局变量 YUE.location 中所有 host 将为 x-host 中的 host。
+2. 如果客户端 host 与后端请求 host 不一致，后端服务可以在 框架机请求 header 中的 x-host 与 x-url 中取到框架机接收到的相应 host（这一步已经包括对 nginx 中 x-host 的获取） 与 url。
 
 ## 原有项目迁移
 
