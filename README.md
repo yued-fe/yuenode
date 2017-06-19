@@ -336,9 +336,9 @@ views
 |--------|:---:|:---:|:---:|:---:|
 |起点pc   | dev1/dev3 | oa1/oa2/oa3 | pre |    |
 |起点m站  | dev |  oa | pre |    |
-|起点活动  | dev1/dev2/dev3 | oa1/oa2/oa3 | pre |    |
-|起点boss |   dev  |  oa   |  / |    |
-|起点海外版 |  / |  oa |    |    |
+|起点活动  | dev1/dev2/dev3 | oa1/oa2/oa3 | pre | pro |
+|起点boss |   dev  |  oa   |  / |  pro |
+|起点海外版 |  / |  oa/oa2 |    |    |
 |起点海外m站|  / |  oa |    |    |
 |起点个人中心| dev | oa | pre | pro |
 |小阅pc|  dev |  oa | pre | pro |
