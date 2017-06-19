@@ -12,8 +12,8 @@ module.exports = {
       instances: 0,
       exec_mode: 'cluster',
       // 以下是日志输出选项
-      out_file: '/data/logs/oawww.webnovel.com/out.log',
-      error_file: '/data/logs/oawww.webnovel.com/err.log',
+      out_file: '/data/logs/www.webnovel.com/out.log',
+      error_file: '/data/logs/www.webnovel.com/err.log',
       merge_logs: true,
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
       // 以下是站点配置
