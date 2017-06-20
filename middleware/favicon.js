@@ -2,6 +2,9 @@
 
 /**
  * 处理favicon路由逻辑
+ * 由于有些浏览器默认请求 host/favicon.ico,为防止运维无配置相关nginx,导致框架机大量404错误请求,yuenode做兼容处理。
+ * 看到这段注释后让运维人员去配置以规范
+ * 参考:https://serverfault.com/questions/308299/how-to-set-a-favicon-ico-for-a-specific-virtual-host-on-nginx
  */
 
 const fs = require('fs');
