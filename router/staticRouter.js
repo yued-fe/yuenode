@@ -200,10 +200,10 @@ if (!!siteConf.static_dynamic_router) {
             const {cgiUrl, addr} = yield utils.fixCgi(routeConf.cgi, this.params, this.query);
 
             // 取得header，根据环境指定后端host,后台根据host来区分后端业务server
-            const header = Object.assign({}, this.headers, {host: serverConf.cgi.domain});
+            const header = Object.assign({}, {host: serverConf.cgi.domain});
 
             // 发送请求 post请求无需合并相关头
-            const {result} = yield utils.requestCgi(cgiUrl, {});
+            const {result} = yield utils.requestCgi(cgiUrl,header);
 
             // 如果后台返回200
             if (result.statusCode === 200) {
