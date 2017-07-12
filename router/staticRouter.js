@@ -203,7 +203,6 @@ if (!!siteConf.static_dynamic_router) {
             const header = Object.assign({},{host: serverConf.cgi.domain});
             // 发送请求
             const {result} = yield utils.requestCgi(cgiUrl, header);
-
             // 如果后台返回200
             if (result.statusCode === 200) {
 
