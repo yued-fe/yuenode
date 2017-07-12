@@ -1,4 +1,3 @@
-const NODE_ENV = process.env.NODE_ENV || 'local';
 
 module.exports = {
   /**
@@ -7,20 +6,20 @@ module.exports = {
   apps: [
     {
       // 服务别名
-      name: 'm',
+      name: 'oversea',
       script: 'app.js',
       node_args: '--harmony',
       instances: 0,
       exec_mode: 'cluster',
       // 以下是日志输出选项
-      out_file: 'logs/m.qidian.com/out.log',
-      error_file: 'logs/m.qidian.com/err.log',
+      out_file: '/data/logs/www.webnovel.com/out.log',
+      error_file: '/data/logs/www.webnovel.com/err.log',
       merge_logs: true,
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
       // 以下是站点配置
       env: {
-        NODE_SITE: 'm', // NODE服务项目别名
-        NODE_ENV: NODE_ENV, // 当前Node服务环境
+        NODE_SITE: 'oversea', // NODE服务项目别名
+        NODE_ENV: 'oa', // 当前Node服务环境
         port: 10500, // 服务端口
         CONFIG_FILE: 'off', // 设置为 on 时,兼容旧有配置文件形式
         // 站点配置
@@ -29,31 +28,30 @@ module.exports = {
           l5_on: false, 
           // 后端是否采用https协议
           cgi_ssl_on: false,
-
           // 项目配置文件夹地址
-          path: '/Users/yuewen-luolei/Yuewen/Tencent/qidian-m/.cache/config',
+          path: '/data/website/en.qidian.com/views/node-config',
           // 配置文件名,默认为 server.js
           server_conf_file: 'server',
           // extends文件或文件夹名，如果是文件夹默认加载文件夹内的index，没有index的话加载loader
           extends_file: 'extends',
           // 是否开启非0自定义handler
-          custom_handle_on: true,
+          custom_handle_on: false,
           // 非0自定义handler文件路径
           custom_handle_file: '',
 
           // 动态路由映射文件或文件夹名,默认为 routermap，如果是文件夹默认加载文件夹内的index
-          routermap_file: 'routes', 
+          routermap_file: 'dynamic_routermap', 
           // 是否开启 inline-ejs,提供忽略 <script type="text/ejs-template"></script> 功能
           inline_ejs: true,
           // 开启 inline-ejs后，可自定义 script 标签的 type 属性，默认为 text/ejs-template
           inline_ejs_type: 'text/ejs-template',
           // 是否开启简繁体转换功能
-          character_conversion: true,
+          character_conversion: false,
           // 是否开启非0强制渲染页面，主要针对静态化页面本地渲染，比如后端返回没有code、msg，只有data的情况。
           force_render: false, 
 
           // 是否开启静态化服务
-          static_server_on: true,
+          static_server_on: false,
           // 静态化路由配合文件,默认为 static_routermap
           static_routermap_file: 'static_routermap',
           // 是否开启静态化 html 压缩

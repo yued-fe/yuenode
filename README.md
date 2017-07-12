@@ -330,23 +330,6 @@ views
 1. 要将配置文件修改为现有形式，具体可关注 **配置文件** 一节
 2. 以往模板渲染的一些变量如 pageUpdateTime, CLIENT_URL, cookie等现在已经整合到全局变量 YUE 中，具体可关注 **可以在模板直接使用的全局变量：YUE** 一节
 
-## 已经迁移项目
-
-| 项目名称 | DEV | OA | PRE | PRO |
-|--------|:---:|:---:|:---:|:---:|
-|起点pc   | dev1/dev3 | oa1/oa2/oa3 | pre | pro |
-|起点m站  | dev |  oa | pre | pro |
-|起点活动  | dev1/dev2/dev3 | oa1/oa2/oa3 | pre | pro |
-|起点boss |   dev  |  oa   |  / |  pro |
-|起点海外版 |  / |  oa/oa2 |  pre  |  pro  |
-|起点海外m站|  / |  oa |    |    |
-|起点个人中心| dev | oa | pre | pro |
-|小阅pc|  dev |  oa | pre | pro |
-|小阅m站| dev |  oa  | pre | pro |
-|言吧pc|  dev |  oa |  pre  | pro |
-|言吧m站| dev |  oa  | pre  | pro |
-|红袖pc|  dev |  oa |  pre  | pro |
-|红袖m站| dev |  oa  | pre  | pro |
 
 
 

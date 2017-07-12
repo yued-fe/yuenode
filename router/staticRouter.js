@@ -200,7 +200,8 @@ if (!!siteConf.static_dynamic_router) {
             const {cgiUrl, addr} = yield utils.fixCgi(routeConf.cgi, this.params, this.query);
 
             // 取得header，根据环境指定后端host,后台根据host来区分后端业务server
-            const header = Object.assign({},{host: serverConf.cgi.domain});
+
+            const header = Object.assign({}, {host: serverConf.cgi.domain});
             // 发送请求
             const {result} = yield utils.requestCgi(cgiUrl, header);
             // 如果后台返回200
@@ -212,7 +213,7 @@ if (!!siteConf.static_dynamic_router) {
                 if (body.code !== 0) {
                     this.body = {
                         code: result.statusCode,
-                        msg: `Request ${cgiUrl} body.code is not 0, ${body.msg}`
+                        msg: `请求后端返回数据code不为0, ${body.msg}`
                     };
                     this.status = 400;
                     return false;

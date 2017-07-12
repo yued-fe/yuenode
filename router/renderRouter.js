@@ -37,7 +37,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
         currentConf = routeConf._;
     }
 
-    console.log(chalk.blue('Got current router config: \n'), JSON.stringify(currentConf));
+    console.log(chalk.blue('匹配到当前路由配置：\n'), JSON.stringify(currentConf));
 
     let body = {};
 
@@ -94,9 +94,9 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
                     
                 // 如果没有配置error handler，则抛出错误统一处理
                 } catch (err) {
-                    let newErr = new Error(body.msg || "Backend msg is empty.");
+                    let newErr = new Error(body.msg || '后端 msg 为空');
                     newErr.status = 400;
-                    newErr.stack = body.trace || "Backend trace is empty.";
+                    newErr.stack = body.trace || '后端 trace 为空';
                     throw newErr;
                 }
 
@@ -119,7 +119,7 @@ const configRouter = (routeConf) => function* renderRoutersHandler() {
             }
 
             // 其余状态码直接返回客户端
-            let err = new Error("Backend response status code is: " + result.statusCode);
+            let err = new Error('服务返回' + result.statusCode);
             err.status = result.statusCode;
             err.stack = JSON.stringify(result.body,null,4);
             throw err;
