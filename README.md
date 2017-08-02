@@ -268,6 +268,10 @@ module.exports = {
 
 如果开启了 inline-ejs 功能，则会在模板渲染时跳过 inline-ejs 标签中的相关模板，返回客户端供客户端使用；如果开启了简繁体转换，则会根据 cookie 中的 lang 字段判断简繁体，如果 lang 为 zht，则会将内容转换为繁体输出到客户端；如果配置了 extends 则添加到模板渲染中。
 
+![框架机的模板渲染逻辑](http://oib8kvha0.bkt.clouddn.com/yue-node-dynamic.png)
+
+上图为框架机的模板渲染流程。
+
 ### 错误处理
 
 发生错误时，如果模板文件根目录中存在有 error/{状态码}.html（如 error 文件夹下 404.html），则渲染对应状态码的页面，否则会渲染普通 error 页面。
@@ -317,6 +321,10 @@ views
 收到后端请求后，取得对应 path 的路由配置，取得 views 模板，从请求 body 中（新接口则向后端发送请求）获得数据，渲染完成后保存在 static 配置的文件路径中，如开启压缩则压缩。
 
 如果生成静态文件成功，后端则后收到 statusCode 为 200、body.code 为 0 的回应。否则 body.msg 为相应的原因。 
+
+![两种静态化服务流程](http://oib8kvha0.bkt.clouddn.com/yue-node-static.png)
+
+上图为框架机的两种静态化接口流程。
 
 ### 关于请求
 
