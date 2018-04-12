@@ -5,24 +5,19 @@
 [TOC]
 
 ## 文件目录结构
+
 ```js
 yuenode
     |
-    |-+ config          // 配置文件目录
+    |-+ bash
     |
-    |-+ handler
+    |-+ config          // 配置文件目录
     |
     |-+ lib
     |
     |-+ logs             // 默认日志文件输出目录
     |
-    |-+ middleware
-    |
     |-+ node_modules
-    |
-    |-+ router
-    |
-    |-+ views
     |
     |- app.js
     |
@@ -36,7 +31,7 @@ yuenode
 
 ## 使用方法
 
-1. 执行 npm install
+1. 执行 (t)npm install
 2. 如果需要线上运行，则先要执行 sudo npm install pm2 -g
 3. 配置 config/*.config.js 中的环境变量、功能开关，可以自己复制多份不同的配置文件，每次根据文件启动不同的服务
 4. 本地调试用 gulp 启动，线上用 pm2 启动，如果增加配置需要在 npm scripts 中配置好，需要注意站点配置文件 name、NODE_SITE 以及 npm script 中的命令站点名需要一致。
@@ -52,6 +47,7 @@ yuenode
 6. 运行环境需要 node 版本 >= 6
 
 ## 配置文件
+
 ```js
 const NODE_ENV = process.env.NODE_ENV || 'local';
 
@@ -68,56 +64,46 @@ module.exports = {
       instances: 0,
       exec_mode: 'cluster',
       // 以下是日志输出选项
-      log_file: 'log/m.qidian.com/combined.log',
-      out_file: 'log/m.qidian.com/out.log',
-      error_file: 'log/m.qidian.com/err.log',
+      out_file: 'logs/m.qidian.com/out.log',
+      error_file: 'logs/m.qidian.com/err.log',
       merge_logs: true,
-      log_date_format: 'YYYY-MM-DD HH:mm:ss',
       // 以下是站点配置
       env: {
-        NODE_SITE: 'm', // NODE服务项目别名
-        NODE_ENV: NODE_ENV, // 当前Node服务环境
-        port: 10500, // 服务端口
-        CONFIG_FILE: 'off', // 设置为 on 时,兼容旧有配置文件形式
+        // 服务端口
+        IP: '0.0.0.0',
+        // 服务端口
+        PORT: 10500,
         // 站点配置
         config: JSON.stringify({
+          // NODE服务项目别名
+          NODE_SITE: 'm',
+          // 当前Node服务环境
+          ENV_TYPE: NODE_ENV,
           // 是否开启L5 taf平台适用
-          l5_on: false, 
-          // 后端是否采用https协议
-          cgi_ssl_on: false,
+          l5_on: false,
 
           // 项目配置文件夹地址
-          path: '/Users/shilei/qidian-m/.cache/config',
+          path: '/Users/shilei/qidian-git/qidian-m/.cache/config',
           // 配置文件名,默认为 server.js
           server_conf_file: 'server',
-          // extends文件或文件夹名，如果是文件夹默认加载文件夹内的index，没有index的话加载loader
-          extends_file: 'extends',
-          // 是否开启非0自定义handler
-          custom_handle_on: true,
-          // 非0自定义handler文件路径
-          custom_handle_file: '',
-
           // 动态路由映射文件或文件夹名,默认为 routermap，如果是文件夹默认加载文件夹内的index
           routermap_file: 'routes', 
-          // 是否开启 inline-ejs,提供忽略 <script type="text/ejs-template"></script> 功能
-          inline_ejs: true,
-          // 开启 inline-ejs后，可自定义 script 标签的 type 属性，默认为 text/ejs-template
-          inline_ejs_type: 'text/ejs-template',
+          // extends文件或文件夹名，如果是文件夹默认加载文件夹内的index，没有index的话加载loader
+          extends_file: 'extends',
           // 是否开启简繁体转换功能
           character_conversion: true,
-          // 是否开启非0强制渲染页面，主要针对静态化页面本地渲染，比如后端返回没有code、msg，只有data的情况。
-          force_render: false, 
 
           // 是否开启静态化服务
           static_server_on: true,
           // 静态化路由配合文件,默认为 static_routermap
           static_routermap_file: 'static_routermap',
-          // 是否开启静态化 html 压缩
-          compressHTML: true,
           // 静态化服务原有后端接口，后端post所有页面数据，不使用此静态化接口改为空字符串即可
           static_server_cgi: '/api/v2/setData',
           // 新静态化接口，复用动态路由，使用则注意在动态路由加入static字段，后端post请求动态路由，不需要传body数据，不使用此静态化接口改为空字符串即可
           static_dynamic_router: '/api/setStatic',
+
+          // 显示错误密码，不配置则关闭
+          error_show_pwd: false
         })
       }
     }
@@ -132,12 +118,12 @@ module.exports = {
 {
   ua              // [String] user-agent
   location        // [Object] location obj
-  cookie          // [Object] cookie obj
+  cookie          // [string] cookie string
+  cookieObj       // [Object] cookie obj
 
-  pageUpdateTime  // [String] 时间
   staticConf      // [Object] 静态配置
   envType         // [String] 当前环境
-                  // extends（如果开启）
+  extends         // [Object] extends 方法
 }
 
 // YUE.location
@@ -223,29 +209,8 @@ module.exports = {
 }
 
 /**
- * 非0自定义handler
- * 与后端约定数据格式为{code: 0, msg: '', data: {}}
- * code 为 0 则表示成功，不为 0 则 msg 为失败消息，data 为 实际数据
- * 如果 code 不为 0，则各项目可以根据自己的约定对非 0 的情况做一些处理，即为非0自定义handler
- * 此函数将会在后端返回code不为0时调用，可以做一些自定义逻辑，没有的话会由框架机默认渲染error页面，除非开启强制渲染
- */
-module.exports = function (ctx, body, requestUrl) {
-  switch (body.code) {
-    case 1:
-      throw new Error('找不到数据 后台服务端拉取数据失败')
-      break;
-    case 1006:
-      body.defaultSearch = {};
-      body.msg = body.msg + '\n' + body.exception;
-      ctx.status = 302;
-      ctx.redirct('/error');
-      break;
-  }
-}
-
-/**
  * 自定义扩展
- * 可以将一些自定义方法注入到框架机中通过 YUE.{方法名} 直接调用
+ * 可以将一些自定义方法注入到框架机中通过 YUE.extends.{方法名} 直接调用
  */
 module.exports = {
   getBookUrl: function(bookId) {
@@ -262,15 +227,11 @@ module.exports = {
 
 ### 模板渲染
 
-因为有些项目有多域名的情况，所以首先会将动态路由变为 path.host.config 的形式，可以支持多域名的情况。收到客户端请求后根据 path 去寻找相应的域名下的路由配置，取得 views 模板，向后端发送 cgi 取得数据，cgi 返回不为 200/301/302，则发生对应错误。返回 200 但 code 不为 0 则发生 400 错误，有非 0 自定义 handler 则执行。
+因为有些项目有多域名的情况，所以首先会将动态路由变为 path.host.config 的形式，可以支持多域名的情况。收到客户端请求后根据 path 去寻找相应的域名下的路由配置，取得 views 模板，向后端发送 cgi 取得数据，cgi 返回不为 200/301/302，则发生对应错误。返回 200 但 code 不为 0 则发生 400 错误。
 
-向后端发送 cgi 请求前如果开启 L5 且正确配置，会从 L5 取得相应后端 ip，否则采用项目配置文件中的 cgi.ip。cgi.domain 为后端请求 headers 中的 host 字段，配置错误有可能造成后端拒绝请求。如果后端采用 https 协议，请在框架机中开启。
+向后端发送 cgi 请求前如果开启 L5 且正确配置，会从 L5 取得相应后端 ip，否则采用项目配置文件中的 cgi.ip。cgi.domain 为后端请求 headers 中的 host 字段，配置错误有可能造成后端拒绝请求。
 
-如果开启了 inline-ejs 功能，则会在模板渲染时跳过 inline-ejs 标签中的相关模板，返回客户端供客户端使用；如果开启了简繁体转换，则会根据 cookie 中的 lang 字段判断简繁体，如果 lang 为 zht，则会将内容转换为繁体输出到客户端；如果配置了 extends 则添加到模板渲染中。
-
-![框架机的模板渲染逻辑](http://oib8kvha0.bkt.clouddn.com/yue-node-dynamic.png)
-
-上图为框架机的模板渲染流程。
+在模板渲染时跳过 <script type="text/ejs-template"></script> 标签中的相关模板，返回客户端供客户端使用；如果开启了简繁体转换，则会根据 cookie 中的 lang 字段判断简繁体，如果 lang 为 zht，则会将内容转换为繁体输出到客户端；如果配置了 extends 则添加到模板渲染中。
 
 ### 错误处理
 
@@ -279,6 +240,8 @@ module.exports = {
 寻找顺序为：模板文件根目录中对应域名文件夹下 error/{状态码}.html 页面 => 模板文件根目录 error/{状态码}.html 页面 => 模板文件根目录中对应域名文件夹下 error.html 页面 => 模板文件根目录 error.html 页面 => 框架机自带 error.html 页面。顺序寻找，找到即渲染。
 
 为兼容已有项目，请注意 error.html 页面与 error 文件夹为平级。以上为强约定，不需要配置。
+
+pro 环境添加你配置的 error_show_pwd 到 query 可以显示错误信息。
 
 ```js
 /**
@@ -316,15 +279,11 @@ views
 
 ### 静态化服务
 
-静态化一律由后端 post 请求进行发起，旧有接口需要将页面所需 data 全部 post 过来，新接口则可以复用模板渲染的路由，可以直接 post 请求模板渲染的路由 path，只要在模板渲染的路由中配置好相应的 static 字段即可。
+静态化一律由后端 post 请求进行发起，旧有接口需要将页面所需 data 全部 post 过来，新接口则可以复用模板渲染的路由，可以直接 post 请求模板渲染的路由 path (例如 '/api/setStatic/m.qidian.com/male')，只要在模板渲染的路由中配置好相应的 static 字段即可。
 
-收到后端请求后，取得对应 path 的路由配置，取得 views 模板，从请求 body 中（新接口则向后端发送请求）获得数据，渲染完成后保存在 static 配置的文件路径中，如开启压缩则压缩。
+收到后端请求后，取得对应 path 的路由配置，取得 views 模板，从请求 body 中（新接口则向后端发送请求）获得数据，渲染完成后保存在 static 配置的文件路径中。
 
 如果生成静态文件成功，后端则后收到 statusCode 为 200、body.code 为 0 的回应。否则 body.msg 为相应的原因。 
-
-![两种静态化服务流程](http://oib8kvha0.bkt.clouddn.com/yue-node-static.png)
-
-上图为框架机的两种静态化接口流程。
 
 ### 关于请求
 
@@ -332,12 +291,4 @@ views
 
 1. 如果请求 host 在 nginx 中做过变换（例如将 www.webnovel.com 转换成 en.qidian.com），可以在 nginx 转换时将客户端的真实 host 加入到请求 header 中的 x-host，这样全局变量 YUE.location 中所有 host 将为 x-host 中的 host。
 2. 如果客户端 host 与后端请求 host 不一致，后端服务可以在 框架机请求 header 中的 x-host 与 x-url 中取到框架机接收到的相应 host（这一步已经包括对 nginx 中 x-host 的获取） 与 url。
-
-## 原有项目迁移
-
-1. 要将配置文件修改为现有形式，具体可关注 **配置文件** 一节
-2. 以往模板渲染的一些变量如 pageUpdateTime, CLIENT_URL, cookie等现在已经整合到全局变量 YUE 中，具体可关注 **可以在模板直接使用的全局变量：YUE** 一节
-
-
-
 
