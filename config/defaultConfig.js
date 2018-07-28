@@ -142,6 +142,8 @@ module.exports = {
                         location: url.parse(userClientUrl, true, true),
                         cookie: userCookie,
                         cookieObj: cookies.parse(userCookie),
+                        pageUpdateTime: dateformat(Date.now(), "yyyy-mm-dd,HH:MM:ss"),
+                        header: ctx.header,
                     });
 
                     return body;
@@ -163,7 +165,7 @@ module.exports = {
                 dynamicStaticPath: siteConf.static_dynamic_router,
                 dynamicRouterMap: routerMap,
                 // 获取请求ip
-                getRequestIP: function* (ctx) {
+                getRequestIP: function* (ctx, isL52) {
                     /**
                      * 无l5
                      */
@@ -180,9 +182,18 @@ module.exports = {
                 },
                 // 注入渲染数据
                 getRenderData: (body, ctx) => {
+                    const clientHost = ctx.header['x-host'] ? ctx.header['x-host'] : ctx.host;
+                    const userClientUrl = ctx.protocol + '://' + clientHost + ctx.url;
+                    const userCookie = ctx.header.cookie || '';
+
                     // 将业务中较常使用到的信息作为通用信息抛给前端业务方使用
-                    body.YUE = Object.assign(body.YUE || {}, stateInfo , {
+                    body.YUE = Object.assign(body.YUE || {}, stateInfo, {
+                        ua: ctx.header['user-agent'] || '',
+                        location: url.parse(userClientUrl, true, true),
+                        cookie: userCookie,
+                        cookieObj: cookies.parse(userCookie),
                         pageUpdateTime: dateformat(Date.now(), "yyyy-mm-dd,HH:MM:ss"),
+                        header: ctx.header,
                     });
 
                     return body;

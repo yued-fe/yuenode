@@ -120,6 +120,7 @@ module.exports = {
   location        // [Object] location obj
   cookie          // [string] cookie string
   cookieObj       // [Object] cookie obj
+  header          // [Object] header
 
   staticConf      // [Object] 静态配置
   envType         // [String] 当前环境
