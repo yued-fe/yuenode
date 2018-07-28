@@ -1,6 +1,6 @@
 {
   "name": "yuenode",
-  "version": "2.9.8",
+  "version": "2.9.9",
   "author": "shilei",
   "description": "A Nodejs framework for Yuewen Group's project",
   "main": "app.js",

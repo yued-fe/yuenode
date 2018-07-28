@@ -103,7 +103,9 @@ module.exports = {
           static_dynamic_router: '/api/setStatic',
 
           // 显示错误密码，不配置则关闭
-          error_show_pwd: false
+          error_show_pwd: false,
+          // 接口超时时间
+          timeout: 5000,
         })
       }
     }

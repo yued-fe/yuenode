@@ -31,7 +31,8 @@ module.exports = {
         NODE_SITE: siteConf.NODE_SITE,
         ENV_TYPE: envType,
         IP: process.env.IP || '0.0.0.0',
-        PORT: process.env.PORT
+        PORT: process.env.PORT,
+        timeout: siteConf.timeout || 5000,
     },
     middlewares: [
         // 请求记录中间件
