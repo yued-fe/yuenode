@@ -137,10 +137,24 @@ module.exports = {
                     const userClientUrl = ctx.protocol + '://' + clientHost + ctx.url;
                     const userCookie = ctx.header.cookie || '';
 
+                    const urlObj = url.parse(userClientUrl, true, true)
+                    if (urlObj.query) {
+                      const keys = Object.keys(urlObj.query)
+                      if (keys && keys.length) {
+                        const newQuery = {}
+                        keys.forEach((key) => {
+                          newQuery[encodeURI(key)] = encodeURI(urlObj.query[key])
+                        })
+                        urlObj.query = newQuery
+                      }
+                    }
+                    if (ctx.header && ctx.header.referer) {
+                        ctx.header.referer = url.parse(ctx.header.referer).href
+                    }
                     // 将业务中较常使用到的信息作为通用信息抛给前端业务方使用
                     body.YUE = Object.assign(body.YUE || {}, stateInfo, {
                         ua: ctx.header['user-agent'] || '',
-                        location: url.parse(userClientUrl, true, true),
+                        location: urlObj,
                         cookie: userCookie,
                         cookieObj: cookies.parse(userCookie),
                         pageUpdateTime: dateformat(Date.now(), "yyyy-mm-dd,HH:MM:ss"),
@@ -187,10 +201,24 @@ module.exports = {
                     const userClientUrl = ctx.protocol + '://' + clientHost + ctx.url;
                     const userCookie = ctx.header.cookie || '';
 
+                    const urlObj = url.parse(userClientUrl, true, true)
+                    if (urlObj.query) {
+                      const keys = Object.keys(urlObj.query)
+                      if (keys && keys.length) {
+                        const newQuery = {}
+                        keys.forEach((key) => {
+                          newQuery[encodeURI(key)] = encodeURI(urlObj.query[key])
+                        })
+                        urlObj.query = newQuery
+                      }
+                    }
+                    if (ctx.header && ctx.header.referer) {
+                        ctx.header.referer = url.parse(ctx.header.referer).href
+                    }
                     // 将业务中较常使用到的信息作为通用信息抛给前端业务方使用
                     body.YUE = Object.assign(body.YUE || {}, stateInfo, {
                         ua: ctx.header['user-agent'] || '',
-                        location: url.parse(userClientUrl, true, true),
+                        location: urlObj,
                         cookie: userCookie,
                         cookieObj: cookies.parse(userCookie),
                         pageUpdateTime: dateformat(Date.now(), "yyyy-mm-dd,HH:MM:ss"),
